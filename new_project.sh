@@ -25,6 +25,8 @@ gsmag theosp/razoss_common_js javascript/src/razoss_common_js
 gsmag theosp/theosp_common_css style/src/theosp_common_css
 gsmag theosp/headjs javascript/src/headjs
 
+gsmir
+
 ga .
 
 gcm "Add submodules: theosp_common_build_tools, theosp_common_js, theosp_common_css, razoss_common_js, headjs"
