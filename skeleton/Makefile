@@ -38,6 +38,7 @@ BASE_JS_FILE_COMPONENTS = \
     ${JS_SRC_DIR}/theosp_common_js/json2.js\
     ${JS_SRC_DIR}/theosp_common_js/base64.js\
     ${JS_SRC_DIR}/theosp_common_js/date.format.js\
+    ${JS_SRC_DIR}/razoss_common_js/javascript/razoss_api.js\
     ${JS_SRC_DIR}/headjs/src/core.js
 
 
@@ -125,7 +126,7 @@ ${BASE_JS_YAHOO_COMPILED_FILE}: ${BASE_JS_FILE}
 ${BASE_JS_GOOGLE_COMPILED_FILE}: ${BASE_JS_FILE}
 	@@${call GCC_COMPILE,${BASE_JS_FILE},${BASE_JS_GOOGLE_COMPILED_FILE}}
 
-${BASE_JS_FILE}: ${BASE_JS_FILE_COMPONENTS} theosp_common_js_submodule
+${BASE_JS_FILE}: ${BASE_JS_FILE_COMPONENTS} theosp_common_js_submodule razoss_common_js_submodule
 	@@echo "Building base js (${BASE_JS_FILE})"
 
 	@@cat ${BASE_JS_FILE_COMPONENTS} > ${BASE_JS_FILE}
@@ -134,6 +135,11 @@ theosp_common_js_submodule:
 	@@echo "Building theosp_common_js submodule"
 
 	@@cd javascript/src/theosp_common_js; $(MAKE) $(MFLAGS)
+
+razoss_common_js_submodule:
+	@@echo "Building razoss_common_js submodule"
+
+	@@cd javascript/src/razoss_common_js; $(MAKE) $(MFLAGS)
 # }}}
 
 # base style {{{
@@ -150,7 +156,7 @@ ${BASE_CSS_FILE}: ${BASE_LESS_CSS_FILE}
 # }}}
 
 .PHONY: all\
-		base_js theosp_common_js_submodule\
+		base_js theosp_common_js_submodule razoss_common_js_submodule\
 		base_style
 
 clean: 
