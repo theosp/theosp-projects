@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+
+        <!-- Simple OpenID Selector -->
+        <link rel="stylesheet" href="/media/openid-selector/css/openid.css" />
+        <script type="text/javascript" src="/media/openid-selector/js/openid-jquery.js"></script>
+        <script type="text/javascript" src="/media/openid-selector/js/openid-jquery-en.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                openid.img_path = '/media/openid-selector/images/';
+                openid.init('openid');
+            });
+        </script>
+        <!-- /Simple OpenID Selector -->
+
+        <title>Log in with OpenID</title>
+    </head>
+    <body>
+        <h1>Log in with OpenID</h1>
+
+<!-- Simple OpenID Selector -->
+<form action="/_ah/login_required" method="get" id="openid_form">
+	<fieldset>
+    		<legend>Sign-in or Create New Account</legend>
+    		
+    		<div id="openid_choice">
+	    		<p>Please click your account provider:</p>
+	    		<div id="openid_btns"></div>
+			</div>
+
+            {% if continue %}
+            <input type="hidden" name="continue" value="{{continue|escape}}" />
+            {% endif %}
+			
+			<div id="openid_input_area">
+				<input id="openid" name="openid" type="text" value="http://" />
+				<input id="openid_submit" type="submit" value="Sign-In"/>
+			</div>
+			<noscript>
+			<p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+			Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
+			</noscript>
+	</fieldset>
+</form>
+<!-- /Simple OpenID Selector -->
+
+<b>If you don't already have an account on any of the above</b><br />
+<a href="https://www.myopenid.com/signup?affiliate_id=64083">Click here to sign up</a>
+
+    </body>
+</html>
+

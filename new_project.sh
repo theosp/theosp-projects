@@ -13,7 +13,18 @@ fi
 
 gig "$user_project_name_github"
 
-cp -r ../skeleton/* .
+cp -r ../skeleton/* ../skeleton/.lvimrc .
+
+# get project name and insert it to the skeleton {{{
+echo -n "Enter Human Readable Project Project Name: "
+IFS= read -r project_readable_name
+
+echo -n "Enter Google Appengine Application Name: "
+IFS= read -r application_name
+
+find . -type f -exec sed -i "s/|project_readable_name|/${project_readable_name}/g" {} \;
+find . -type f -exec sed -i "s/|application_name|/${application_name}/g" {} \;
+# }}}
 
 ga .
 
@@ -27,6 +38,7 @@ gsmag theosp/headjs javascript/src/headjs
 # app engine related submodules {{{
 gsmag theosp/google_appengine google_appengine
 gsmag theosp/appengine_django appengine_django
+gsmag theosp/simplejson lib/simplejson
 gsmag django/django django-dist 1 # 1 for readonly
 ln -s django-dist django
 # }}}

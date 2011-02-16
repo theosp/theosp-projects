@@ -1,4 +1,4 @@
-nnoremap <buffer> <silent> <s-e> :w<CR>:!make<CR>
+nnoremap <buffer> <silent> <s-e> :w<CR>:!make<CR>:!sudo ./gae-server.sh<CR>
 
 " vim:ft=vim:
 

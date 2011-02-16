@@ -1,0 +1,91 @@
+application: |application_name|
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /favicon.ico
+  static_files: media/favicon.ico
+  upload: media/favicon.ico
+
+- url: /media
+  static_dir: media
+
+- url: /javascript
+  static_dir: javascript
+
+- url: /style
+  static_dir: style
+
+# appengine admin {{{
+- url: /appengine_admin(/.*)?
+  script: apis/appengine_admin_wrapper.py
+  login: admin 
+# }}}
+
+# datastore_admin {{{
+- url: /_ah/datastore_admin(/.*)?
+  script: apis/datastore_admin_wrapper.py
+  login: admin 
+# }}}
+
+# login {{{
+- url: /_ah/login_required
+  script: apis/login.py
+# }}}
+
+# setup {{{
+- url: /setup/.*
+  script: apis/setup.py
+  login: admin
+# }}}
+
+# memcache API {{{
+# admin parts {{{
+- url: /memcache/flush_all/?
+  script: apis/memcache.py
+  login: admin
+# }}}
+# }}}
+
+# user API {{{
+- url: /user(/.*)?
+  script: apis/user.py
+# }}}
+
+# Frontends {{{
+
+# admin parts {{{
+- url: /admin/?
+  script: /apis/frontend.py
+  login: admin
+# }}}
+
+# home {{{
+- url: /?
+  script: /apis/frontend.py
+# }}}
+
+# }}}
+
+builtins:
+- datastore_admin: on
+
+skip_files:
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.bak$
+- ^django/
+- ^django-dist/
+- ^non_gae_indicator
+- ^google_appengine
+- .*Makefile$
+- .*README$
+- .*\.less$
+
+# vim:fdm=marker:fmr={{{,}}}:

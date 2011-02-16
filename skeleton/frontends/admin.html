@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>|project_readable_name| - cpanel</title>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/humanity/jquery-ui.css" type="text/css" /> 
+
+        <script type="text/javascript" src="/javascript/base.gcc.min.js"></script>
+
+        <script type="text/javascript" src="/javascript/frontends/admin/admin.gcc.min.js"></script>
+
+        <link rel="stylesheet" href="/style/frontends/admin/admin.yui.min.css" type="text/css" /> 
+    </head>
+    <body>
+        <div class="content">
+            <h1>|project_readable_name| Admin Panel</h1>
+            <h2 id="page_title"></h2>
+            <div id="page"></div>
+        </div>
+
+        <div id="menu">
+            <h1>Menu</h1>
+            <h2>Edit</h2>
+            <ul>
+            </ul>
+            <h2>Links</h2>
+            <ul>
+            </ul>
+            <h2>Misc</h2>
+            <ul>
+                <li><div id="user_connection_bar"></div></li>
+            </ul>
+        </div>
+
+        <script type="text/javascript">
+            (function () {
+                var user = new $.User().on('ready', function (user_info) {
+                    user.simpleUserConnectionStatusBar($('#user_connection_bar'));
+                });
+
+                var switchSection = function (title, section_jquery_constructor) {
+                    var page = $('#page');
+                    var page_title = $('#page_title');
+
+                    if (typeof page.data('current_section') !== 'undefined') {
+                        if (typeof page.data('current_section').closeSection !== 'undefined') {
+                            page.data('current_section').closeSection();
+                        }
+                    }
+
+                    page_title.html(title);
+                    var section_object = page[section_jquery_constructor]()[0];
+
+                    page.data('current_section', section_object);
+                };
+            })();
+        </script>
+    </body>
+</html>

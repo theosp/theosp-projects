@@ -1,0 +1,2 @@
+This file is in app.yaml's skip_files list, which means we don't upload it to
+GAE, so we can use it to indicate which environment we are working on.
