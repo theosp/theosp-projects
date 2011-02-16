@@ -1,0 +1,4 @@
+nnoremap <buffer> <silent> <s-e> :w<CR>:!make<CR>
+
+" vim:ft=vim:
+
