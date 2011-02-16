@@ -24,6 +24,13 @@ gsmag theosp/theosp_common_js javascript/src/theosp_common_js
 gsmag theosp/theosp_common_css style/src/theosp_common_css
 gsmag theosp/headjs javascript/src/headjs
 
+# app engine related submodules {{{
+gsmag theosp/google_appengine google_appengine
+gsmag theosp/appengine_django appengine_django
+gsmag django/django django-dist 1 # 1 for readonly
+ln -s django-dist django
+# }}}
+
 gsmir
 
 ga .
