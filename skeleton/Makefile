@@ -33,6 +33,8 @@ BASE_JS_YAHOO_COMPILED_FILE = ${JS_DIR}/base.yui.min.js
 
 BASE_JS_FILE_COMPONENTS = \
     ${JS_SRC_DIR}/theosp_common_js/theosp.js\
+    ${JS_SRC_DIR}/theosp_common_js/query-string.js\
+    ${JS_SRC_DIR}/theosp_common_js/url.js\
     ${JS_SRC_DIR}/theosp_common_js/event-emitter.js\
     ${JS_SRC_DIR}/theosp_common_js/modes_manager.js\
     ${JS_SRC_DIR}/theosp_common_js/json2.js\
