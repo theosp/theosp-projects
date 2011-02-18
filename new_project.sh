@@ -7,9 +7,20 @@ shopt -s expand_aliases # needed for the git aliases to work properly
 # }}}
 
 # vars {{{
-action="install" # install is the default option
-user_project_name_github=""
-path=""
+
+# options {{{
+option_action="install" # install is the default option
+option_project_readable_name=""
+# }}}
+
+# arguments {{{
+user_project_name_github="" # $1
+path="" # $2
+# }}}
+
+# data {{{
+
+# project submodules {{{
 submodules=(
    #"repository" "path" "readonly"
     "theosp/theosp_common_build_tools" "build" 0
@@ -27,6 +38,10 @@ unset i n
 submodules_names_string=${submodules_names[@]}
 # }}}
 
+# }}}
+
+# }}}
+
 # functions {{{
 
 # show_help () {{{
@@ -36,7 +51,7 @@ NAME
     new_project.sh - Initiate/Update web application projects
 
 SYNOPSIS
-    ./new_project.sh [--install | --update | --update-skeleton | --update-submodules] [--] <github-rep> [<path>]
+    ./new_project.sh [--install | --update | --update-skeleton | --update-submodules] [--project-readable-name readable_name] [--] <github-rep> [<path>]
     ./new_project.sh [-h] [--help]
 
 OPTIONS
@@ -77,6 +92,16 @@ submodule_update () {
 }
 # }}}
 
+# }}}
+
+# recursive_find_replace (path, search, replace) {{{
+recursive_find_replace () {
+    local path="$1"
+    local search="$2"
+    local replace="$3"
+
+    find "$path" -type f -exec sed -i "s/$search/$replace/g" {} \;
+}
 # }}}
 
 # actions {{{
@@ -155,8 +180,11 @@ action_install () {
 action_update_skeleton () {
     local github_project="$1"
     local path="$2"
+    local project_readable_name="${option_project_readable_name:-${github_project#*/}}"
 
     cp -r skeleton/* "$path"
+
+    recursive_find_replace "$path" "|project_readable_name|" "$project_readable_name"
 }
 # }}}
 
@@ -175,24 +203,33 @@ while [[ $1 == -* ]]; do
           exit 0
       ;;
       --install)
-          action="install"
+          option_action="install"
 
           shift
       ;;
       --update)
-          action="update"
+          option_action="update"
 
           shift
       ;;
       --update-skeleton)
-          action="update-skeleton"
+          option_action="update-skeleton"
 
           shift
       ;;
       --update-submodules)
-          action="update-submodules"
+          option_action="update-submodules"
 
           shift
+      ;;
+      --project-readable-name)
+          if (($# > 1)); then
+              option_project_readable_name="$2"
+              shift 2
+          else
+              echo "--project-readable-name requires an argument" 1>&2
+              exit 1
+          fi
       ;;
       --)
           shift
@@ -223,7 +260,7 @@ fi
 # }}}
 
 # call action {{{
-action_"${action/-/_}" "$user_project_name_github" "$path"
+action_"${option_action/-/_}" "$user_project_name_github" "$path"
 # }}}
 
 # vim:ft=bash:fdm=marker:fmr={{{,}}}:
