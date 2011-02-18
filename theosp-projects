@@ -59,11 +59,11 @@ submodules_names_string=${submodules_names[@]}
 show_help () {
     cat <<EOF
 NAME
-    new_project.sh - Initiate/Update web application projects
+    theosp-projects - Initiate/Update web application projects
 
 SYNOPSIS
-    ./new_project.sh [--install | --update | --update-skeleton | --update-submodules] [--project-readable-name readable_name] [--gae-app-name gae_app_name] [--] <github-rep> [<path>]
-    ./new_project.sh [-h] [--help]
+    ./theosp-projects [--install | --update | --update-skeleton | --update-submodules] [--project-readable-name readable_name] [--gae-app-name gae_app_name] [--] <github-rep> [<path>]
+    ./theosp-projects [-h] [--help]
 
 OPTIONS
 EOF
