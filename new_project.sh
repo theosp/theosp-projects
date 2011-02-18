@@ -11,11 +11,11 @@ action="install" # install is the default option
 user_project_name_github=""
 path=""
 submodules=(
-   #"repository" "path"
-    "theosp/theosp_common_build_tools" "build"
-    "theosp/theosp_common_js" "javascript/src/theosp_common_js"
-    "theosp/theosp_common_css" "style/src/theosp_common_css"
-    "theosp/headjs" "javascript/src/headjs"
+   #"repository" "path" "readonly"
+    "theosp/theosp_common_build_tools" "build" 0
+    "theosp/theosp_common_js" "javascript/src/theosp_common_js" 0
+    "theosp/theosp_common_css" "style/src/theosp_common_css" 0
+    "theosp/headjs" "javascript/src/headjs" 0
 )
 
 submodules_names=()
@@ -54,8 +54,8 @@ submodule_install () {
     cd "$path"
 
     local i n=${#submodules[*]}
-    for (( i=0; i < n; i += 2 )); do
-        gsmag "${submodules[i]}" "${submodules[$((i + 1))]}"
+    for (( i=0; i < n; i += 3 )); do
+        gsmag "${submodules[i]}" "${submodules[$((i + 1))]}" ${submodules[$((i + 2))]}
     done
 
     pwd
