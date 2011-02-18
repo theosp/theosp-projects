@@ -20,7 +20,7 @@ submodules=(
 
 submodules_names=()
 n=${#submodules[*]}
-for (( i=0; i < n; i += 2 )); do
+for (( i=0; i < n; i += 3 )); do
     submodules_names+=( "${submodules[i]}" )
 done
 unset i n
