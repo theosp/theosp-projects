@@ -8,8 +8,9 @@ shopt -s expand_aliases # needed for the git aliases to work properly
 
 # vars {{{
 
+command=""
+
 # options {{{
-option_action="install" # install is the default option
 option_project_readable_name=""
 # }}}
 
@@ -21,6 +22,9 @@ path="" # $2
 # data {{{
 
 # project submodules {{{
+
+valid_commands=( new update update-skeleton update-submodules )
+
 submodules=(
    #"repository" "path" "readonly"
     "theosp/theosp_common_build_tools" "build" 0
@@ -52,10 +56,23 @@ NAME
     theosp-projects - Initiate/Update web application projects
 
 SYNOPSIS
-    ./theosp-projects [--install | --update | --update-skeleton | --update-submodules] [--project-readable-name readable_name] [--] <github-rep> [<path>]
+    ./theosp-projects COMMAND [--project-readable-name readable_name] [--] <github-rep> [<path>]
     ./theosp-projects [-h] [--help]
 
 OPTIONS
+
+COMMANDS
+    new
+        new theosp project
+
+    update
+        update theosp project's skeleton and submodules
+
+    update-skeleton
+        update theosp project's skeleton
+
+    update-submodules
+        update theosp project's submodules
 EOF
 }
 # }}}
@@ -105,10 +122,10 @@ recursive_find_replace () {
 }
 # }}}
 
-# actions {{{
+# commands {{{
 
-# action_install (github_project, path) {{{
-action_install () {
+# command_new (github_project, path) {{{
+command_new () {
     local github_project="$1"
     local path="$2"
 
@@ -117,7 +134,7 @@ action_install () {
     # }}}
 
     # add skeleton files {{{
-    action_update_skeleton "$github_project" "$path"
+    command_update_skeleton "$github_project" "$path"
 
     pushd . > /dev/null
     cd "$path"
@@ -177,8 +194,8 @@ action_install () {
 }
 # }}}
 
-# action_update_skeleton (github_project, path) {{{
-action_update_skeleton () {
+# command_update_skeleton (github_project, path) {{{
+command_update_skeleton () {
     local github_project="$1"
     local path="$2"
     local project_readable_name="${option_project_readable_name:-${github_project#*/}}"
@@ -195,6 +212,35 @@ action_update_skeleton () {
 
 # parse argv {{{
 
+# load command {{{
+if (($# > 0)); then
+    command="$1"
+    shift
+else
+    show_help
+    exit 1
+fi
+
+valid_command=0
+n=${#valid_commands[*]}
+for (( i=0; i < n; i += 1 )); do
+    item="${valid_commands[i]}"
+
+    if [[ "$item" == "$command" ]]; then
+        valid_command=1
+    fi
+done
+
+if (( $valid_command == 0 )); then
+    echo "theosp-projects: '$command' is not a theosp-projects command." 1>&2
+    show_help
+
+    exit 1
+fi
+
+unset i n item valid_command
+# }}}
+
 # load options {{{
 # original: http://mywiki.wooledge.org/BashFAQ/035 (Manual Loop)
 while [[ $1 == -* ]]; do
@@ -202,26 +248,6 @@ while [[ $1 == -* ]]; do
       -h|--help|-\?)
           show_help
           exit 0
-      ;;
-      --install)
-          option_action="install"
-
-          shift
-      ;;
-      --update)
-          option_action="update"
-
-          shift
-      ;;
-      --update-skeleton)
-          option_action="update-skeleton"
-
-          shift
-      ;;
-      --update-submodules)
-          option_action="update-submodules"
-
-          shift
       ;;
       --project-readable-name)
           if (($# > 1)); then
@@ -260,8 +286,8 @@ fi
 
 # }}}
 
-# call action {{{
-action_"${option_action/-/_}" "$user_project_name_github" "$path"
+# call command {{{
+command_"${command/-/_}" "$user_project_name_github" "$path"
 # }}}
 
 # vim:ft=bash:fdm=marker:fmr={{{,}}}:
