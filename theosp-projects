@@ -31,6 +31,7 @@ submodules=(
     # base {{{
     "theosp/theosp_common_build_tools" "build" 0
     "theosp/theosp_common_js" "javascript/src/theosp_common_js" 0
+    "theosp/razoss_common_js" "javascript/src/razoss_common_js" 0
     "theosp/theosp_common_css" "style/src/theosp_common_css" 0
     "theosp/headjs" "javascript/src/headjs" 0
     # }}}

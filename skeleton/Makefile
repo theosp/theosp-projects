@@ -41,6 +41,7 @@ BASE_JS_FILE_COMPONENTS = \
     ${JS_SRC_DIR}/theosp_common_js/json2.js\
     ${JS_SRC_DIR}/theosp_common_js/base64.js\
     ${JS_SRC_DIR}/theosp_common_js/date.format.js\
+    ${JS_SRC_DIR}/razoss_common_js/javascript/razoss_api.js\
     ${JS_SRC_DIR}/headjs/src/core.js
 
 FILES_GENERATED_FOR_BASE_JS = ${BASE_JS_FILE}\
