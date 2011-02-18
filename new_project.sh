@@ -7,14 +7,21 @@ shopt -s expand_aliases # needed for the git aliases to work properly
 # }}}
 
 # vars {{{
-action="install" # install is the default option
 
-user_project_name_github=""
-project_readable_name=""
-gae_app_name=""
+# options {{{
+option_action="install" # install is the default option
+option_project_readable_name=""
+option_gae_app_name=""
+# }}}
 
-path=""
+# arguments {{{
+user_project_name_github="" # $1
+path="" # $2
+# }}}
 
+# data {{{
+
+# project submodules {{{
 submodules=(
     #"repository" "path" "readonly"
     # base {{{
@@ -40,6 +47,10 @@ for (( i=0; i < n; i += 3 )); do
 done
 unset i n
 submodules_names_string=${submodules_names[@]}
+# }}}
+
+# }}}
+
 # }}}
 
 # functions {{{
@@ -119,7 +130,7 @@ action_install () {
     # }}}
 
     # add skeleton files {{{
-    action_update_skeleton "$github_project" "$path" "$project_readable_name" "$gae_app_name"
+    action_update_skeleton "$github_project" "$path"
 
     pushd . > /dev/null
     cd "$path"
@@ -179,12 +190,12 @@ action_install () {
 }
 # }}}
 
-# action_update_skeleton (github_project, path, project_readable_name, gae_app_name) {{{
+# action_update_skeleton (github_project, path) {{{
 action_update_skeleton () {
     local github_project="$1"
     local path="$2"
-    local project_readable_name="${3:-${github_project#*/}}"
-    local gae_app_name="${4:-${github_project#*/}}"
+    local project_readable_name="${option_project_readable_name:-${github_project#*/}}"
+    local gae_app_name="${option_gae_app_name:-${github_project#*/}}"
 
     cp -r skeleton/* "$path"
 
@@ -208,28 +219,28 @@ while [[ $1 == -* ]]; do
           exit 0
       ;;
       --install)
-          action="install"
+          option_action="install"
 
           shift
       ;;
       --update)
-          action="update"
+          option_action="update"
 
           shift
       ;;
       --update-skeleton)
-          action="update-skeleton"
+          option_action="update-skeleton"
 
           shift
       ;;
       --update-submodules)
-          action="update-submodules"
+          option_action="update-submodules"
 
           shift
       ;;
       --project-readable-name)
           if (($# > 1)); then
-              project_readable_name="$2"
+              option_project_readable_name="$2"
               shift 2
           else
               echo "--project-readable-name requires an argument" 1>&2
@@ -238,7 +249,7 @@ while [[ $1 == -* ]]; do
       ;;
       --gae-app-name)
           if (($# > 1)); then
-              gae_app_name="$2"
+              option_gae_app_name="$2"
               shift 2
           else
               echo "--gae-app-name requires an argument" 1>&2
@@ -274,7 +285,7 @@ fi
 # }}}
 
 # call action {{{
-action_"${action/-/_}" "$user_project_name_github" "$path"
+action_"${option_action/-/_}" "$user_project_name_github" "$path"
 # }}}
 
 # vim:ft=bash:fdm=marker:fmr={{{,}}}:
