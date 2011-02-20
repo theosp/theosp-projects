@@ -172,9 +172,12 @@ GCC_COMPILE = \
 LESS_CSS_COMPILE = \
 	${call MAKE_PATH_DIR,${2}};\
 \
-	rm -f "${2}";\
+	if [[ "${1}" != "${2}" ]]; then\
+		rm -f "${2}";\
 \
-	lessc "${1}" "${2}"
+		lessc "${1}" "${2}";\
+	fi
+# }}}
 # }}}
 
 # all {{{
