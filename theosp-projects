@@ -199,7 +199,7 @@ command_update_skeleton () {
     local path="$2"
     local project_readable_name="${option_project_readable_name:-${github_project#*/}}"
 
-    cp -r skeleton/* .lvimrc "$path"
+    cp -r skeleton/* skeleton/.lvimrc "$path"
 
     recursive_find_replace "$path" "|project_readable_name|" "$project_readable_name"
 }
