@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./theosp-projects update-skeleton --project-readable-name "Razoss" --gae-app-name "razoss-home-dev" theosp/razoss-home
+./theosp-projects update-skeleton --project-readable-name "Razoss" --gae-app-name "razoss-home-dev" theosp/razoss-home ~/razoss-home
 
 # vim:ft=bash:fdm=marker:fmr={{{,}}}:
