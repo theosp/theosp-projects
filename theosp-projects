@@ -130,7 +130,7 @@ recursive_find_replace () {
     local search="$2"
     local replace="$3"
 
-    find "$path" -type f -exec sed -i "s/$search/$replace/g" {} \;
+    find "$path" -type f ! \( -path "*.git*" \) -exec sed -i "s/$search/$replace/g" {} \;
 }
 # }}}
 
@@ -213,7 +213,7 @@ command_update_skeleton () {
     local project_readable_name="${option_project_readable_name:-${github_project#*/}}"
     local gae_app_name="${option_gae_app_name:-${github_project#*/}}"
 
-    cp -r skeleton/* .lvimrc "$path"
+    cp -r skeleton/* skeleton/.lvimrc "$path"
 
     recursive_find_replace "$path" "|project_readable_name|" "$project_readable_name"
     recursive_find_replace "$path" "|application_name|" "$gae_app_name"
