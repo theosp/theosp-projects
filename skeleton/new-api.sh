@@ -774,8 +774,15 @@ api_python_module_template="$(cat <<EOF
                 if key in fields:
                     setattr(|underscored_api_name|, key, query[key])
 
-            |underscored_api_name|.created_by = users.User()
-            |underscored_api_name|.modified_by = users.User()
+            try:
+                |underscored_api_name|.created_by = users.User()
+            except users.UserNotFoundError:
+                |underscored_api_name|.created_by = None
+
+            try:
+                |underscored_api_name|.modified_by = users.User()
+            except users.UserNotFoundError:
+                |underscored_api_name|.modified_by = None
 
             |underscored_api_name|.put()
 
@@ -800,7 +807,10 @@ api_python_module_template="$(cat <<EOF
                 if key in fields:
                     setattr(|underscored_api_name|, key, query[key])
 
-            |underscored_api_name|.modified_by = users.User()
+            try:
+                |underscored_api_name|.modified_by = users.User()
+            except users.UserNotFoundError:
+                |underscored_api_name|.modified_by = None
 
             |underscored_api_name|.put()
 
