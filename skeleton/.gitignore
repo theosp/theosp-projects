@@ -1,3 +1,4 @@
 *.gcc.min.js
 *.yui.min.js
 *.css
+javascript/base.js
