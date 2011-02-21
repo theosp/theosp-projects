@@ -182,19 +182,6 @@ command_new () {
     popd > /dev/null
     # }}}
     
-    # make {{{
-    pushd . > /dev/null
-    cd "$path"
-
-    make
-
-    ga .
-
-    gcm "make"
-
-    popd > /dev/null
-    # }}}
-
     # push {{{
     pushd . > /dev/null
     cd "$path"
