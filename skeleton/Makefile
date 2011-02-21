@@ -54,7 +54,7 @@ BASE_LESS_CSS_FILE = ${CSS_SRC_DIR}/base.css.less
 BASE_CSS_YAHOO_COMPILED_FILE = ${CSS_DIR}/base.yui.min.css
 
 FILES_GENERATED_FOR_BASE_STYLE = ${BASE_CSS_FILE}\
-                                 ${BASE_LESS_CSS_FILE}
+                                 ${BASE_CSS_YAHOO_COMPILED_FILE}
 # }}}
 
 # Sums {{{
