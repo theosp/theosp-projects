@@ -29,7 +29,6 @@ PYTHON_API_SETTINGS_DIR = ${PYTHON_API_DIR}/settings
 # base javascript {{{
 BASE_JS_FILE = ${JS_DIR}/base.js
 BASE_JS_GOOGLE_COMPILED_FILE = ${JS_DIR}/base.gcc.min.js
-BASE_JS_YAHOO_COMPILED_FILE = ${JS_DIR}/base.yui.min.js
 
 BASE_JS_FILE_COMPONENTS = \
     ${JS_SRC_DIR}/theosp_common_js/theosp.js\
@@ -55,7 +54,7 @@ BASE_LESS_CSS_FILE = ${CSS_SRC_DIR}/base.css.less
 BASE_CSS_YAHOO_COMPILED_FILE = ${CSS_DIR}/base.yui.min.css
 
 FILES_GENERATED_FOR_BASE_STYLE = ${BASE_CSS_FILE}\
-                                 ${BASE_LESS_CSS_FILE}
+                                 ${BASE_CSS_YAHOO_COMPILED_FILE}
 # }}}
 
 # Sums {{{
@@ -119,11 +118,8 @@ all: base_js base_style
 	@@echo "Build complete"
 
 # base javascript {{{
-base_js: ${BASE_JS_GOOGLE_COMPILED_FILE} ${BASE_JS_YAHOO_COMPILED_FILE}
+base_js: ${BASE_JS_GOOGLE_COMPILED_FILE}
 	@@echo "Building base js"
-
-${BASE_JS_YAHOO_COMPILED_FILE}: ${BASE_JS_FILE}
-	@@${call YUI_COMPILE,${BASE_JS_FILE},${BASE_JS_YAHOO_COMPILED_FILE}}
 
 ${BASE_JS_GOOGLE_COMPILED_FILE}: ${BASE_JS_FILE}
 	@@${call GCC_COMPILE,${BASE_JS_FILE},${BASE_JS_GOOGLE_COMPILED_FILE}}
