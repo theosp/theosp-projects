@@ -43,8 +43,7 @@ BASE_JS_FILE_COMPONENTS = \
 
 
 FILES_GENERATED_FOR_BASE_JS = ${BASE_JS_FILE}\
-                              ${BASE_JS_GOOGLE_COMPILED_FILE}\
-                              ${BASE_JS_YAHOO_COMPILED_FILE}
+                              ${BASE_JS_GOOGLE_COMPILED_FILE}
 # }}}
 
 # base style {{{
