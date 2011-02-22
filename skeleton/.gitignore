@@ -1,7 +1,32 @@
+# ignore css files not under style/src {{{
+*.css
+!style/src/*
+!style/src/*/*
+!style/src/*/*/*
+# }}}
+
+# javascript {{{
+
+# ignore compiled javascript files {{{
 *.gcc.min.js
 *.yui.min.js
-*.css
-javascript/base.js
+# }}}
 
+# ignore javascript files not under style/src {{{
+*.js
+!javascript/src/*
+!javascript/src/*/*
+!javascript/src/*/*/*
+# }}}
+
+# }}}
+
+# python {{{
 *.pyc
+# }}}
+
+# django {{{
 *.db
+# }}}
+
+# vim:ft=:fdm=marker:fmr={{{,}}}:
