@@ -3,6 +3,13 @@
 !style/src/*.css
 !style/src/*/*.css
 !style/src/*/*/*.css
+
+# ignore lesscss compiled css files {{{
+style/src/*.lcc.css
+style/src/*/*.lcc.css
+style/src/*/*/*.lcc.css
+# }}}
+
 # }}}
 
 # javascript {{{
