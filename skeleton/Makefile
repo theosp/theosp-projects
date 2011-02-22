@@ -103,8 +103,8 @@ FILES_GENERATED_FOR_ADMIN_FRONTEND_JS = ${ADMIN_FRONTEND_JS_FILE}\
 # }}}
 
 # style {{{
-ADMIN_FRONTEND_CSS_FILE = ${ADMIN_FRONTEND_STYLE_DIR}/admin.css
-ADMIN_FRONTEND_CSS_YAHOO_COMPILED_FILE = ${ADMIN_FRONTEND_CSS_FILE:.css=.yui.min.css}
+ADMIN_FRONTEND_CSS_FILE = ${ADMIN_FRONTEND_STYLE_DIR}/admin.lcc.css
+ADMIN_FRONTEND_CSS_YAHOO_COMPILED_FILE = ${ADMIN_FRONTEND_CSS_FILE:.lcc.css=.yui.min.css}
 
 ADMIN_FRONTEND_LESS_CSS_FILES = ${CSS_SRC_DIR}/theosp_common_css/reset.css.less\
 								${ADMIN_FRONTEND_STYLE_SRC_DIR}/admin.css.less
@@ -268,10 +268,10 @@ ${ADMIN_FRONTEND_CSS_FILE}: ${ADMIN_FRONTEND_LESS_CSS_FILES}
 	@@mkdir -p ${ADMIN_FRONTEND_STYLE_DIR};
 
 	@@for file in ${ADMIN_FRONTEND_LESS_CSS_FILES}; do \
-		${call LESS_CSS_COMPILE,$$file,$${file/.less/}}; \
+		${call LESS_CSS_COMPILE,$$file,$${file/.css.less/.lcc.css}}; \
 	done
 
-	@@cat ${ADMIN_FRONTEND_LESS_CSS_FILES:.less=} > ${ADMIN_FRONTEND_CSS_FILE}
+	@@cat ${ADMIN_FRONTEND_LESS_CSS_FILES:.css.less=.lcc.css} > ${ADMIN_FRONTEND_CSS_FILE}
 # }}}
 
 # }}}
