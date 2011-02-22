@@ -1,8 +1,8 @@
 # ignore css files not under style/src {{{
 *.css
-!style/src/*
-!style/src/*/*
-!style/src/*/*/*
+!style/src/*.css
+!style/src/*/*.css
+!style/src/*/*/*.css
 # }}}
 
 # javascript {{{
@@ -14,9 +14,9 @@
 
 # ignore javascript files not under style/src {{{
 *.js
-!javascript/src/*
-!javascript/src/*/*
-!javascript/src/*/*/*
+!javascript/src/*.js
+!javascript/src/*/*.js
+!javascript/src/*/*/*.js
 # }}}
 
 # }}}
