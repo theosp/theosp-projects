@@ -1,0 +1,199 @@
+(function () { 
+
+    // load modules {{{
+    var fs = require('fs');
+    // }}}
+
+    // variables {{{
+    var templates = {
+        "./api-generator-inc/templates/api.py":
+            "apis/{{ underscored_entity_name }}.py",
+        "./api-generator-inc/templates/api.js":
+            "javascript/src/apis/{{ underscored_entity_name }}.js",
+        "./api-generator-inc/templates/admin_frontend_section.js":
+            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
+        "./api-generator-inc/templates/admin_frontend_editor.js":
+            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js"
+    };
+    // }}}
+
+    // populate_template {{{
+    var populateTemplate = function (string, templates_tags) {
+        // based on Douglas Crockford's String.prototype.supplant
+        return string.replace(/{{\s*(\w+?)\s*}}/g, 
+            function (s0, s1) {  
+                var tag_val = templates_tags[s1];
+
+                if (typeof tag_val === 'function') {
+                    return tag_val();
+                }
+
+                if (typeof tag_val === 'string' || typeof tag_val === 'number') {
+                    return tag_val;
+                }
+
+                return s0; // keep original
+            }
+        ); 
+    };
+    // }}}
+    
+    // actions {{{
+    var actions = {
+
+        // help {{{
+        help: function () {
+            process.stdout.write([
+                "NAME",
+                "     theosp-gae-api-generator - Genrate a new api for Google App Engine application along with its admin interfaces",
+                "   ",
+                "     SYNOPSIS",
+                "         ./theosp-gae-api-generator <theosp-gae-api-generator-conf-file> <appengine-project-path>",
+                "         ./theosp-gae-api-generator [-h] [--help]",
+                "   ",
+                "     OPTIONS",
+                "",
+                "     COMMANDS",
+                ""
+            ].join("\n"));
+        },
+        // }}}
+
+        // install {{{
+        install: function (conf_file, project_path) {
+            if (conf_file.indexOf('/') === -1) {
+                conf_file = './' + conf_file;
+            }
+
+            if (project_path.slice(-1) === "/") {
+                project_path = project_path.slice(0, -1);
+            }
+
+            var project = require(conf_file).project;
+
+            for (var api_key in project.apis) {
+                if (project.apis.hasOwnProperty(api_key)) {
+                    var api = project.apis[api_key],
+                        // generate api's templates tags {{{
+                        templates_tags = {
+
+                            // readable_capitalized_entity_name: {{{
+                            readable_capitalized_entity_name: api.entity_name,
+                            // }}}
+
+                            // readable_capitalized_pluralized_entity_name {{{
+                            readable_capitalized_pluralized_entity_name: api.pluralized_entity_name,
+                            // }}}
+
+                            // readable_noncapitalized_entity_name {{{
+                            readable_noncapitalized_entity_name: api.entity_name.toLowerCase(),
+                            // }}}
+
+                            // readable_noncapitalized_pluralized_entity_name {{{
+                            readable_noncapitalized_pluralized_entity_name: api.pluralized_entity_name.toLowerCase(),
+                            // }}}
+
+                            // underscored_entity_name {{{
+                            underscored_entity_name: api.entity_name.toLowerCase().replace(/ /g, '_'),
+                            // }}}
+
+                            // underscored_pluralized_entity_name {{{
+                            underscored_pluralized_entity_name: api.pluralized_entity_name.toLowerCase().replace(/ /g, '_'),
+                            // }}}
+
+                            // camelcased_entity_name {{{
+                            camelcased_entity_name: api.entity_name.replace(/ /g, ''),
+                            // }}}
+
+                            // camelcased_pluralized_entity_name {{{
+                            camelcased_pluralized_entity_name: api.pluralized_entity_name.replace(/ /g, ''),
+                            // }}}
+
+                            // lower_camelcased_pluralized_entity_name {{{
+                            lower_camelcased_pluralized_entity_name: function () {
+                                var s = api.pluralized_entity_name.replace(/ /g, '');
+
+                                return s.charAt(0).toLowerCase() + s.substr(1);
+                            }
+                            // }}}
+
+                        };
+                        // }}}
+
+                    // copy templates files to their path in the project {{{
+                    for (var template_path in templates) {
+                        if (templates.hasOwnProperty(template_path)) {
+                            var output_path = project_path + '/' +
+                                    populateTemplate(templates[template_path], templates_tags),
+                                read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
+                                write_stream = fs.createWriteStream(output_path);
+
+                            // without a the anon func the callback for
+                            // write_stream.once might hold the next for loop
+                            // iteration read/write_streams
+                            (function (read_stream, write_stream) {
+                                var template = '';
+                                read_stream
+                                    .on('data', function (data) {
+                                        template += data;
+                                    })
+                                    .on('end', function () {
+                                        write_stream.write(
+                                            populateTemplate(template, templates_tags));
+                                    });
+                            })(read_stream, write_stream);
+                        }
+                    }
+                    // }}}
+
+                    var read_stream = fs.createReadStream('./api-generator-inc/templates/tasks.txt', {encoding: 'utf8'}),
+                        tasks = '';
+
+                    read_stream
+                        .on('data', function (data) {
+                            tasks += data;
+                        })
+                        .on('end', function () {
+                            console.log(populateTemplate(tasks, templates_tags));
+                        });
+                }
+            }
+        }
+        // }}}
+
+    };
+    // }}}
+
+    // getOpts {{{
+    var getOpts = function (argv) {
+        argv = argv.slice(2); // remove the call for node and the script name
+
+        if (/^(-h|--help)/.test(argv[0])) {
+            return {action: "help"};
+        } else {
+            if (typeof argv[0] !== 'undefined' && typeof argv[1] !== 'undefined') {
+                return {action: "install", args: [argv[0], argv[1]]};
+            } else {
+                return {action: "help", args: []};
+            }
+        }
+    };
+    // }}}
+
+    // main {{{
+    var main = function () {
+        var opts = getOpts(process.argv);
+
+        actions[opts.action].apply(this, opts.args);
+    };
+    // }}}
+
+    // if main {{{
+    if (!module.parent) {
+        main();
+    }
+    // }}}
+
+})();
+
+// vim:ft=javascript:fdm=marker:fmr={{{,}}}:
