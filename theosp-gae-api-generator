@@ -13,7 +13,9 @@
         "./api-generator-inc/templates/admin_frontend_section.js":
             "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
         "./api-generator-inc/templates/admin_frontend_editor.js":
-            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js"
+            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js",
+        "./api-generator-inc/templates/model.py":
+            "apis/models/{{ underscored_entity_name }}.py"
     };
     // }}}
 

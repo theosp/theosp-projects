@@ -24,6 +24,7 @@ from urlparse import urlparse
 
 import os
 
+from apis.models.{{ underscored_entity_name }} import {{ camelcased_entity_name }}
 from apis.helpers.paging import PagedQuery
 # }}}
 
@@ -52,25 +53,6 @@ class JsonEncoder(json.JSONEncoder):
             return dict_representation
 
         return obj.__dict__
-
-
-class {{ camelcased_entity_name }}(db.Expando):
-    # Attributes
-    name = db.StringProperty(default="New {{ readable_capitalized_entity_name }}")
-
-    # |TODO| Put your module attributes here
-    # elements = db.TextProperty(default="{}")
-    # options = db.TextProperty(default="{}")
-
-    # modifications date tracking
-    date_created = db.DateTimeProperty(auto_now_add=True)
-    date_modified = db.DateTimeProperty(auto_now=True)
-
-    # created by
-    created_by = db.UserProperty()
-    # modified by
-    modified_by = db.UserProperty()
-
 
 def _get_path_{{ underscored_entity_name }}(path):
     "Get the {{ readable_noncapitalized_entity_name }} object of the url path's {{ readable_noncapitalized_entity_name }} key"
