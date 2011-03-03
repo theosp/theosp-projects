@@ -6,15 +6,15 @@
 
     // variables {{{
     var templates = {
-        "./api-generator-inc/templates/api.py":
+        "./api-generator-templates/standard/api.py":
             "apis/{{ underscored_entity_name }}.py",
-        "./api-generator-inc/templates/api.js":
+        "./api-generator-templates/standard/api.js":
             "javascript/src/apis/{{ underscored_entity_name }}.js",
-        "./api-generator-inc/templates/admin_frontend_section.js":
+        "./api-generator-templates/standard/admin_frontend_section.js":
             "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
-        "./api-generator-inc/templates/admin_frontend_editor.js":
+        "./api-generator-templates/standard/admin_frontend_editor.js":
             "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js",
-        "./api-generator-inc/templates/model.py":
+        "./api-generator-templates/standard/model.py":
             "apis/models/{{ underscored_entity_name }}.py"
     };
     // }}}
@@ -148,7 +148,7 @@
                     }
                     // }}}
 
-                    var read_stream = fs.createReadStream('./api-generator-inc/templates/tasks.txt', {encoding: 'utf8'}),
+                    var read_stream = fs.createReadStream('./api-generator-templates/standard/tasks.txt', {encoding: 'utf8'}),
                         tasks = '';
 
                     read_stream
