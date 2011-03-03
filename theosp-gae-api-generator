@@ -6,16 +6,20 @@
 
     // variables {{{
     var templates = {
-        "./api-generator-templates/standard/api.py":
-            "apis/{{ underscored_entity_name }}.py",
-        "./api-generator-templates/standard/api.js":
-            "javascript/src/apis/{{ underscored_entity_name }}.js",
-        "./api-generator-templates/standard/admin_frontend_section.js":
-            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
-        "./api-generator-templates/standard/admin_frontend_editor.js":
-            "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js",
-        "./api-generator-templates/standard/model.py":
-            "apis/models/{{ underscored_entity_name }}.py"
+        standard: {
+            "./api-generator-templates/standard/api.py":
+                "apis/{{ underscored_entity_name }}.py",
+            "./api-generator-templates/standard/api.js":
+                "javascript/src/apis/{{ underscored_entity_name }}.js",
+            "./api-generator-templates/standard/admin_frontend_section.js":
+                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
+            "./api-generator-templates/standard/admin_frontend_editor.js":
+                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js",
+            "./api-generator-templates/standard/model.py":
+                "apis/models/{{ underscored_entity_name }}.py"
+        },
+        file_system: {
+        }
     };
     // }}}
 
@@ -123,10 +127,10 @@
                         // }}}
 
                     // copy templates files to their path in the project {{{
-                    for (var template_path in templates) {
-                        if (templates.hasOwnProperty(template_path)) {
+                    for (var template_path in templates[api.type]) {
+                        if (templates[api.type].hasOwnProperty(template_path)) {
                             var output_path = project_path + '/' +
-                                    populateTemplate(templates[template_path], templates_tags),
+                                    populateTemplate(templates[api.type][template_path], templates_tags),
                                 read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
                                 write_stream = fs.createWriteStream(output_path);
 
@@ -148,7 +152,7 @@
                     }
                     // }}}
 
-                    var read_stream = fs.createReadStream('./api-generator-templates/standard/tasks.txt', {encoding: 'utf8'}),
+                    var read_stream = fs.createReadStream('./api-generator-templates/' + api.type + '/tasks.txt', {encoding: 'utf8'}),
                         tasks = '';
 
                     read_stream
