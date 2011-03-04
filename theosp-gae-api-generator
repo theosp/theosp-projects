@@ -6,6 +6,8 @@
 
     // variables {{{
     var templates = {
+
+        // standard {{{
         standard: {
             "./api-generator-templates/standard/api.py":
                 "apis/{{ underscored_entity_name }}.py",
@@ -18,8 +20,23 @@
             "./api-generator-templates/standard/model.py":
                 "apis/models/{{ underscored_entity_name }}.py"
         },
+        // }}}
+
+        // file_system {{{
         file_system: {
+            "./api-generator-templates/file_system/api.py":
+                "apis/{{ underscored_entity_name }}.py",
+            "./api-generator-templates/file_system/api.js":
+                "javascript/src/apis/{{ underscored_entity_name }}.js",
+            "./api-generator-templates/file_system/admin_frontend_section.js":
+                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
+            "./api-generator-templates/file_system/admin_frontend_uploader.js":
+                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_uploader.js",
+            "./api-generator-templates/file_system/model.py":
+                "apis/models/{{ underscored_entity_name }}.py"
         }
+        // }}}
+
     };
     // }}}
 
@@ -82,6 +99,10 @@
                     var api = project.apis[api_key],
                         // generate api's templates tags {{{
                         templates_tags = {
+
+                            // project_domain {{{
+                            project_domain: project.domain,
+                            // }}}
 
                             // readable_capitalized_entity_name: {{{
                             readable_capitalized_entity_name: api.entity_name,
