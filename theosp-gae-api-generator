@@ -202,9 +202,11 @@
 
             for (var api_key in project.apis) {
                 if (project.apis.hasOwnProperty(api_key)) {
-                    var api = project.apis[api_key],
+                    var api = project.apis[api_key];
+
+                    (function (api) {
                         // generate api's templates components {{{
-                        templates_components = {
+                        var templates_components = {
 
                             // Tags {{{
                             tags: {
@@ -282,42 +284,43 @@
                         };
                         // }}}
 
-                    // copy templates files to their path in the project {{{
-                    for (var template_path in templates[api.type]) {
-                        if (templates[api.type].hasOwnProperty(template_path)) {
-                            var output_path = project_path + '/' +
-                                    populateTemplate(templates[api.type][template_path], templates_components),
-                                read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
-                                write_stream = fs.createWriteStream(output_path);
+                        // copy templates files to their path in the project {{{
+                        for (var template_path in templates[api.type]) {
+                            if (templates[api.type].hasOwnProperty(template_path)) {
+                                var output_path = project_path + '/' +
+                                        populateTemplate(templates[api.type][template_path], templates_components),
+                                    read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
+                                    write_stream = fs.createWriteStream(output_path);
 
-                            // without a the anon func the callback for
-                            // write_stream.once might hold the next for loop
-                            // iteration read/write_streams
-                            (function (read_stream, write_stream) {
-                                var template = '';
-                                read_stream
-                                    .on('data', function (data) {
-                                        template += data;
-                                    })
-                                    .on('end', function () {
-                                        write_stream.write(
-                                            populateTemplate(template, templates_components));
-                                    });
-                            })(read_stream, write_stream);
+                                // without a the anon func the callback for
+                                // write_stream.once might hold the next for loop
+                                // iteration read/write_streams
+                                (function (read_stream, write_stream) {
+                                    var template = '';
+                                    read_stream
+                                        .on('data', function (data) {
+                                            template += data;
+                                        })
+                                        .on('end', function () {
+                                            write_stream.write(
+                                                populateTemplate(template, templates_components));
+                                        });
+                                })(read_stream, write_stream);
+                            }
                         }
-                    }
-                    // }}}
+                        // }}}
 
-                    var read_stream = fs.createReadStream('./api-generator-templates/' + api.type + '/tasks.txt', {encoding: 'utf8'}),
-                        tasks = '';
+                        var read_stream = fs.createReadStream('./api-generator-templates/' + api.type + '/tasks.txt', {encoding: 'utf8'}),
+                            tasks = '';
 
-                    read_stream
-                        .on('data', function (data) {
-                            tasks += data;
-                        })
-                        .on('end', function () {
-                            console.log(populateTemplate(tasks, templates_components));
-                        });
+                        read_stream
+                            .on('data', function (data) {
+                                tasks += data;
+                            })
+                            .on('end', function () {
+                                console.log(populateTemplate(tasks, templates_components));
+                            });
+                    })(api);
                 }
             }
         }
