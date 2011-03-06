@@ -142,13 +142,6 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, self.request.POST[key])
 
-        # check whether there is already file using this permalink
-        result =\
-            {{ camelcased_entity_name }}\
-                .all()\
-                .filter("permalink", {{ underscored_entity_name }}.permalink)\
-                .fetch(1)
-
         # set blobinfo {{{
         upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
         if len(upload_files) == 0:
@@ -159,12 +152,32 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
         {{ underscored_entity_name }}.blobinfo = blobinfo.key()
         # }}}
 
+        # check whether there is already file using this permalink {{{
+        result =\
+            {{ camelcased_entity_name }}\
+                .all()\
+                .filter("permalink", {{ underscored_entity_name }}.permalink)\
+                .fetch(1)
+
         if len(result) != 0:
             # remove uploaded blob
             blobinfo.delete()
 
             # prompt failure
             return self.redirect('/{{ underscored_entity_name }}/failure/Permalink Already Exists')
+        # }}}
+
+        {% ?mime_types_restriced %}
+        # check whether mimetype allowed {{{
+        if blobinfo.content_type not in [{% @allowed_mime_types %}"{{ . }}", {% /@allowed_mime_types %}]:
+            # remove uploaded blob
+            blobinfo.delete()
+
+            # prompt failure
+            return self.redirect('/{{ underscored_entity_name }}/failure/File Type ' + blobinfo.content_type + ' Not Allowed')
+        # }}}
+        {% /?mime_types_restriced %}
+
 
         {{ underscored_entity_name }}.created_by = users.User()
         {{ underscored_entity_name }}.modified_by = users.User()

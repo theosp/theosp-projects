@@ -41,11 +41,114 @@
     // }}}
 
     // populate_template {{{
-    var populateTemplate = function (string, templates_tags) {
-        // based on Douglas Crockford's String.prototype.supplant
-        return string.replace(/{{\s*(\w+?)\s*}}/g, 
-            function (s0, s1) {  
-                var tag_val = templates_tags[s1];
+    var populateTemplate = function (string, components) {
+        // based on Douglas Crockford's supplant
+
+        // Conditional sections {{{
+
+        // {% ?condition %} {{{
+        string = string.replace(/{%\s*\?(\w+?)\s*%}([\s\S]*?){%\s*\/\?(\1)\s*%}/g, 
+            function (original, conditional_section_name, content) {
+                // keep original if unknown conditional section name {{{
+                if (!(conditional_section_name in components.conditional_sections)) {
+                    return original;
+                }
+                // }}}
+
+                var condition = 
+                        components.conditional_sections[conditional_section_name];
+
+                if (typeof condition === 'function') {
+                    if (condition() === true) {
+                        return content;
+                    } else {
+                        return '';
+                    }
+                }
+
+                if (condition === true) {
+                    return content;
+                } else {
+                    return '';
+                }
+
+                return original;
+            }
+        );
+        // }}}
+        
+        // {% !condition %} {{{
+        string = string.replace(/{%\s*\!(\w+?)\s*%}([\s\S]*?){%\s*\/\!(\1)\s*%}/g, 
+            function (original, conditional_section_name, content) {
+                // keep original if unknown conditional section name {{{
+                if (!(conditional_section_name in components.conditional_sections)) {
+                    return original;
+                }
+                // }}}
+
+                var condition = 
+                        components.conditional_sections[conditional_section_name];
+
+                if (typeof condition === 'function') {
+                    if (condition() === false) {
+                        return content;
+                    } else {
+                        return '';
+                    }
+                }
+
+                if (condition === false) {
+                    return content;
+                } else {
+                    return '';
+                }
+
+                return original;
+            }
+        );
+        // }}}
+
+        // }}}
+
+        // iterators {% @iterator %}{{ . }}{{ /@iterator }} {{{
+        string = string.replace(/{%\s*@(\w+?)\s*%}([\s\S]*?){%\s*\/@(\1)\s*%}/g, 
+            function (original, iterator_name, content) {
+                // keep original if unknown iterator name {{{
+                if (!(iterator_name in components.iterators)) {
+                    return original;
+                }
+                // }}}
+
+                var iterator = 
+                        components.iterators[iterator_name];
+
+                if (Array.isArray(iterator)) {
+                    var output = '';
+
+                    for (var i = 0; i < iterator.length; i++) {
+                        var item = iterator[i];
+
+                        output += content.replace(/{{\s*\.\s*}}/, item);
+                    }
+
+                    return output;
+                }
+
+                return original;
+            }
+        );
+        // }}}
+
+        // Tags {{ tag }} {{{
+        string = string.replace(/{{\s*(\w+?)\s*}}/g, 
+            function (original, tag_name) {  
+                // keep original if unknown tag name {{{
+                if (!(tag_name in components.tags)) {
+                    return original;
+                }
+                // }}}
+
+                var tag_val = components.tags[tag_name];
 
                 if (typeof tag_val === 'function') {
                     return tag_val();
@@ -55,9 +158,12 @@
                     return tag_val;
                 }
 
-                return s0; // keep original
+                return original;
             }
-        ); 
+        );
+        // }}}
+
+        return string;
     };
     // }}}
     
@@ -97,53 +203,82 @@
             for (var api_key in project.apis) {
                 if (project.apis.hasOwnProperty(api_key)) {
                     var api = project.apis[api_key],
-                        // generate api's templates tags {{{
-                        templates_tags = {
+                        // generate api's templates components {{{
+                        templates_components = {
 
-                            // project_domain {{{
-                            project_domain: project.domain,
+                            // Tags {{{
+                            tags: {
+
+                                // project_domain {{{
+                                project_domain: project.domain,
+                                // }}}
+
+                                // readable_capitalized_entity_name: {{{
+                                readable_capitalized_entity_name: api.entity_name,
+                                // }}}
+
+                                // readable_capitalized_pluralized_entity_name {{{
+                                readable_capitalized_pluralized_entity_name: api.pluralized_entity_name,
+                                // }}}
+
+                                // readable_noncapitalized_entity_name {{{
+                                readable_noncapitalized_entity_name: api.entity_name.toLowerCase(),
+                                // }}}
+
+                                // readable_noncapitalized_pluralized_entity_name {{{
+                                readable_noncapitalized_pluralized_entity_name: api.pluralized_entity_name.toLowerCase(),
+                                // }}}
+
+                                // underscored_entity_name {{{
+                                underscored_entity_name: api.entity_name.toLowerCase().replace(/ /g, '_'),
+                                // }}}
+
+                                // underscored_pluralized_entity_name {{{
+                                underscored_pluralized_entity_name: api.pluralized_entity_name.toLowerCase().replace(/ /g, '_'),
+                                // }}}
+
+                                // camelcased_entity_name {{{
+                                camelcased_entity_name: api.entity_name.replace(/ /g, ''),
+                                // }}}
+
+                                // camelcased_pluralized_entity_name {{{
+                                camelcased_pluralized_entity_name: api.pluralized_entity_name.replace(/ /g, ''),
+                                // }}}
+
+                                // lower_camelcased_pluralized_entity_name {{{
+                                lower_camelcased_pluralized_entity_name: function () {
+                                    var s = api.pluralized_entity_name.replace(/ /g, '');
+
+                                    return s.charAt(0).toLowerCase() + s.substr(1);
+                                },
+                                // }}}
+
+                                // admin_section_table_cols_count {{{
+                                admin_section_table_cols_count: function () {
+                                    // If images preview
+                                    if (typeof api.images_preview !== 'undefined' && api.images_preview === true) {
+                                        return 7;
+                                    }
+
+                                    return 6;
+                                }
+                                // }}}
+                            },
                             // }}}
 
-                            // readable_capitalized_entity_name: {{{
-                            readable_capitalized_entity_name: api.entity_name,
+                            // Conditional sections {{{
+                            conditional_sections: {
+                                show_images_preview: (typeof api.images_preview !== 'undefined' && api.images_preview === true) ? true : false,
+                                mime_types_restriced: (typeof api.mime_types_restriced !== 'undefined' && api.mime_types_restriced === true) ? true : false
+                            },
                             // }}}
 
-                            // readable_capitalized_pluralized_entity_name {{{
-                            readable_capitalized_pluralized_entity_name: api.pluralized_entity_name,
-                            // }}}
-
-                            // readable_noncapitalized_entity_name {{{
-                            readable_noncapitalized_entity_name: api.entity_name.toLowerCase(),
-                            // }}}
-
-                            // readable_noncapitalized_pluralized_entity_name {{{
-                            readable_noncapitalized_pluralized_entity_name: api.pluralized_entity_name.toLowerCase(),
-                            // }}}
-
-                            // underscored_entity_name {{{
-                            underscored_entity_name: api.entity_name.toLowerCase().replace(/ /g, '_'),
-                            // }}}
-
-                            // underscored_pluralized_entity_name {{{
-                            underscored_pluralized_entity_name: api.pluralized_entity_name.toLowerCase().replace(/ /g, '_'),
-                            // }}}
-
-                            // camelcased_entity_name {{{
-                            camelcased_entity_name: api.entity_name.replace(/ /g, ''),
-                            // }}}
-
-                            // camelcased_pluralized_entity_name {{{
-                            camelcased_pluralized_entity_name: api.pluralized_entity_name.replace(/ /g, ''),
-                            // }}}
-
-                            // lower_camelcased_pluralized_entity_name {{{
-                            lower_camelcased_pluralized_entity_name: function () {
-                                var s = api.pluralized_entity_name.replace(/ /g, '');
-
-                                return s.charAt(0).toLowerCase() + s.substr(1);
+                            // iterators {{{
+                            iterators: {
+                                allowed_mime_types: (typeof api.allowed_mime_types !== "undefined") ? api.allowed_mime_types : []
                             }
                             // }}}
-
+                            
                         };
                         // }}}
 
@@ -151,7 +286,7 @@
                     for (var template_path in templates[api.type]) {
                         if (templates[api.type].hasOwnProperty(template_path)) {
                             var output_path = project_path + '/' +
-                                    populateTemplate(templates[api.type][template_path], templates_tags),
+                                    populateTemplate(templates[api.type][template_path], templates_components),
                                 read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
                                 write_stream = fs.createWriteStream(output_path);
 
@@ -166,7 +301,7 @@
                                     })
                                     .on('end', function () {
                                         write_stream.write(
-                                            populateTemplate(template, templates_tags));
+                                            populateTemplate(template, templates_components));
                                     });
                             })(read_stream, write_stream);
                         }
@@ -181,7 +316,7 @@
                             tasks += data;
                         })
                         .on('end', function () {
-                            console.log(populateTemplate(tasks, templates_tags));
+                            console.log(populateTemplate(tasks, templates_components));
                         });
                 }
             }

@@ -67,6 +67,9 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                         '<table class="|prefix|{{ underscored_pluralized_entity_name }}_table">' +
                             '<thead>' +
                                 '<tr>' +
+                                    {% ?show_images_preview %}
+                                    '<th>Preview</th>' +
+                                    {% /?show_images_preview %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_permalink">Permanent Link</th>' +
                                     '<th>File Size</th>' +
                                     '<th>Content Type</th>' +
@@ -78,7 +81,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                             '<tbody>' +
                             '</tbody>' +
                             '<tfoot>' +
-                                '<tr><td colspan="6">' +
+                                '<tr><td colspan="{{ admin_section_table_cols_count }}">' +
                                     '<div id="|prefix|pager"></div>' +
                                     '<a id="|prefix|add_{{ underscored_entity_name }}" href="javascript:void(0);">Upload {{ readable_capitalized_entity_name }}</a>' +
                                 '</td></tr>' +
@@ -142,7 +145,10 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                         theosp.string.supplant(
                             (
                                 '<tr class="|prefix|{{ underscored_pluralized_entity_name }}_row" id="|prefix|entity_row_|{{ underscored_entity_name }}_id|">' +
-                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_permalink"><a href="http://{{ project_domain }}/{{ underscored_entity_name }}/|{{ underscored_entity_name }}_permalink|" target="_blank">http://{{ project_domain }}/{{ underscored_entity_name }}/|{{ underscored_entity_name }}_permalink|</a></td>' + 
+                                    {% ?show_images_preview %}
+                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_preview"><img src="|{{ underscored_entity_name }}_permalink|" height="50" /></td>' + 
+                                    {% /?show_images_preview %}
+                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_permalink"><a href="|{{ underscored_entity_name }}_permalink|" target="_blank">|{{ underscored_entity_name }}_permalink|</a></td>' + 
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_blob_size">|blob_size|</td>' + 
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_blob_content_type">|blob_content_type|</td>' + 
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_created_by">|created_by|</td>' + 
@@ -150,7 +156,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_remove">REMOVE</td>' + 
                                 '</tr>'
                             ), {prefix: self.options.css_prefix,
-                                {{ underscored_entity_name }}_permalink: {{ underscored_entity_name }}.permalink,
+                                {{ underscored_entity_name }}_permalink: "http://{{ project_domain }}/{{ underscored_entity_name }}/" + {{ underscored_entity_name }}.permalink,
                                 blob_size: {{ underscored_entity_name }}.blobinfo.size,
                                 blob_content_type: {{ underscored_entity_name }}.blobinfo.content_type,
                                 created_by: {{ underscored_entity_name }}.created_by._User__email,
