@@ -5,6 +5,13 @@
         populateTemplate = require('./theosp-nodejs-template-engine/template_engine').populateTemplate;
     // }}}
 
+    // options {{{
+    var options = {
+        conf_file: 'project.conf',
+        project_path: undefined
+    };
+    // }}}
+
     // variables {{{
     var templates = {
 
@@ -48,35 +55,45 @@
         help: function () {
             process.stdout.write([
                 "NAME",
-                "     theosp-gae-api-generator - Genrate a new api for Google App Engine application along with its admin interfaces",
+                "    theosp-gae-api-generator - Genrate a new api for Google App Engine application along with its admin interfaces",
+                "    ",
+                "    SYNOPSIS",
+                "        ./theosp-gae-api-generator [--conf=<theosp-gae-api-generator-conf-file>] [--project-path=<appengine-project-path>] install [<api-key>]",
+                "        ./theosp-gae-api-generator [-h] [--help]",
                 "   ",
-                "     SYNOPSIS",
-                "         ./theosp-gae-api-generator <theosp-gae-api-generator-conf-file> <appengine-project-path>",
-                "         ./theosp-gae-api-generator [-h] [--help]",
-                "   ",
-                "     OPTIONS",
+                "    OPTIONS",
+                "        --conf=<theosp-gae-api-generator-conf-file>",
+                "            If specified will be used instead of the default project.conf",
                 "",
-                "     COMMANDS",
+                "        --project-path=<appengine-project-path>",
+                "            If specified will be used instead of the project object's project_path property which available in the conf file",
+                "",
+                "    COMMANDS",
+                "        install",
+                "            install all the apis defined in the config file unless specific <api-key> is given.",
                 ""
             ].join("\n"));
         },
         // }}}
 
         // install {{{
-        install: function (conf_file, project_path) {
-            if (conf_file.indexOf('/') === -1) {
-                conf_file = './' + conf_file;
+        install: function (api_to_install) {
+            var apis;
+
+            // if the specific api picked
+            if (typeof api_to_install !== 'undefined') {
+                apis = [project.apis[api_to_install]];
+            } else {
+                apis = project.apis; // install all by default
             }
 
-            if (project_path.slice(-1) === "/") {
-                project_path = project_path.slice(0, -1);
-            }
+            for (var api_key in apis) {
+                if (apis.hasOwnProperty(api_key)) {
+                    var api = apis[api_key];
 
-            var project = require(conf_file).project;
-
-            for (var api_key in project.apis) {
-                if (project.apis.hasOwnProperty(api_key)) {
-                    var api = project.apis[api_key];
+                    if (typeof api.type === 'undefined') {
+                        api.type = "standard";
+                    }
 
                     (function (api) {
                         // generate api's templates components {{{
@@ -161,7 +178,7 @@
                         // copy templates files to their path in the project {{{
                         for (var template_path in templates[api.type]) {
                             if (templates[api.type].hasOwnProperty(template_path)) {
-                                var output_path = project_path + '/' +
+                                var output_path = options.project_path + '/' +
                                         populateTemplate(templates[api.type][template_path], templates_components),
                                     read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
                                     write_stream = fs.createWriteStream(output_path);
@@ -205,23 +222,94 @@
 
     // getOpts {{{
     var getOpts = function (argv) {
-        argv = argv.slice(2); // remove the call for node and the script name
+            argv = argv.slice(2); // remove the call for node and the script name
 
-        if (/^(-h|--help)/.test(argv[0])) {
-            return {action: "help"};
-        } else {
-            if (typeof argv[0] !== 'undefined' && typeof argv[1] !== 'undefined') {
-                return {action: "install", args: [argv[0], argv[1]]};
-            } else {
-                return {action: "help", args: []};
+            var action,
+                action_args = [];
+
+            // options {{{
+            for (var i = 0; i < argv.length; i++) {
+                var arg = argv[i];
+            
+                if (/^--conf=.+/.test(arg)) {
+                    options.conf_file = arg.replace('--conf=', "");
+                } else if (/^--project-path=.+/.test(arg)) {
+                    options.project_path = arg.replace('--project-path=', "");
+                } else if (/^--/.test(arg)) {
+                    console.log("Error: Unkown option: " + arg.replace(/\=.*/, '') + "\n");
+                    actions.help();
+
+                    process.exit();
+                } else {
+                    // remove the options arguments from argv and exit
+                    argv = argv.slice(i); 
+                    break;
+                }
             }
-        }
-    };
+            // }}}
+
+            // action {{{
+            if (typeof argv[0] !== 'undefined') {
+                action = argv[0];
+
+                if (!(action in actions)) {
+                    console.log("Error: Unknown action " + action + "." + "\n");
+
+                    action = "help";
+                }
+            } else {
+                console.log("Error: No action found" + "\n");
+
+                action = "help";
+            }
+            // }}}
+
+            // action_args {{{
+            action_args = argv.slice(1);
+            // }}}
+
+            return {action: action, args: action_args};
+        };
     // }}}
 
     // main {{{
     var main = function () {
         var opts = getOpts(process.argv);
+
+        // if action isn't help {{{
+        if (opts.action != "help") {
+            // normalize conf_file option {{{
+            if (options.conf_file.indexOf('/') === -1) {
+                options.conf_file = './' + options.conf_file;
+            }
+            // }}}
+
+            // load project conf {{{
+            project = require(options.conf_file).project;
+            // }}}
+
+            // if project has project_path and the user didn't explicitly set project path using command line argument option {{{
+            if (typeof project.project_path !== 'undefined' && typeof options.project_path === 'undefined') {
+                options.project_path = project.project_path;
+            }
+            // }}}
+
+            if (typeof options.project_path === 'undefined') {
+                console.log("Error: you must set your project-path either in the conf file (project_path property)");
+                console.log("or by passing it as a command line argument --project-path=<project-path>\n");
+
+                // show help and exit
+                actions.help();
+                process.exit();
+            }
+
+            // normalize conf_file option {{{
+            if (options.project_path.slice(-1) === "/") {
+                options.project_path = options.project_path.slice(0, -1);
+            }
+            // }}}
+        }
+        // }}}
 
         actions[opts.action].apply(this, opts.args);
     };
