@@ -22,9 +22,9 @@
             "./api-generator-templates/standard/api.js":
                 "javascript/src/apis/{{ underscored_entity_name }}.js",
             "./api-generator-templates/standard/admin_frontend_section.js":
-                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
+                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
             "./api-generator-templates/standard/admin_frontend_editor.js":
-                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js",
+                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
             "./api-generator-templates/standard/model.py":
                 "apis/models/{{ underscored_entity_name }}.py"
         },
@@ -37,9 +37,9 @@
             "./api-generator-templates/file_system/api.js":
                 "javascript/src/apis/{{ underscored_entity_name }}.js",
             "./api-generator-templates/file_system/admin_frontend_section.js":
-                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js",
+                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
             "./api-generator-templates/file_system/admin_frontend_uploader.js":
-                "javascript/src/admin_frontend/{{ underscored_pluralized_entity_name }}_uploader.js",
+                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
             "./api-generator-templates/file_system/model.py":
                 "apis/models/{{ underscored_entity_name }}.py"
         }
