@@ -6,11 +6,9 @@ class {{ camelcased_entity_name }}(db.Expando):
     # Attributes {{{
     name = db.StringProperty(default="New {{ readable_capitalized_entity_name }}")
 
-    # |TODO| Put your module attributes here
-    # attr1 = db.TextProperty(default="")
-    # attr2 = db.TextProperty(default="")
-    # ...
-    # }}}
+    {% @properties %}
+    {{ item.name }} = {{ item.model_definition }}
+    {% /@properties %}
 
     # Modifications date tracking {{{
     date_created = db.DateTimeProperty(auto_now_add=True)
