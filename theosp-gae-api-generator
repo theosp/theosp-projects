@@ -1,7 +1,8 @@
 (function () { 
 
     // load modules {{{
-    var fs = require('fs');
+    var fs = require('fs'),
+        populateTemplate = require('./theosp-nodejs-template-engine/template_engine').populateTemplate;
     // }}}
 
     // variables {{{
@@ -40,133 +41,6 @@
     };
     // }}}
 
-    // populate_template {{{
-    var populateTemplate = function (string, components) {
-        // based on Douglas Crockford's supplant
-
-        // Conditional sections {{{
-
-        // {% ?condition %} {{{
-        string = string.replace(/{%\s*\?(\w+?)\s*%}([\s\S]*?){%\s*\/\?(\1)\s*%}/g, 
-            function (original, conditional_section_name, content) {
-                // keep original if unknown conditional section name {{{
-                if (!(conditional_section_name in components.conditional_sections)) {
-                    return original;
-                }
-                // }}}
-
-                var condition = 
-                        components.conditional_sections[conditional_section_name];
-
-                if (typeof condition === 'function') {
-                    if (condition() === true) {
-                        return content;
-                    } else {
-                        return '';
-                    }
-                }
-
-                if (condition === true) {
-                    return content;
-                } else {
-                    return '';
-                }
-
-                return original;
-            }
-        );
-        // }}}
-        
-        // {% !condition %} {{{
-        string = string.replace(/{%\s*\!(\w+?)\s*%}([\s\S]*?){%\s*\/\!(\1)\s*%}/g, 
-            function (original, conditional_section_name, content) {
-                // keep original if unknown conditional section name {{{
-                if (!(conditional_section_name in components.conditional_sections)) {
-                    return original;
-                }
-                // }}}
-
-                var condition = 
-                        components.conditional_sections[conditional_section_name];
-
-                if (typeof condition === 'function') {
-                    if (condition() === false) {
-                        return content;
-                    } else {
-                        return '';
-                    }
-                }
-
-                if (condition === false) {
-                    return content;
-                } else {
-                    return '';
-                }
-
-                return original;
-            }
-        );
-        // }}}
-
-        // }}}
-
-        // iterators {% @iterator %}{{ . }}{{ /@iterator }} {{{
-        string = string.replace(/{%\s*@(\w+?)\s*%}([\s\S]*?){%\s*\/@(\1)\s*%}/g, 
-            function (original, iterator_name, content) {
-                // keep original if unknown iterator name {{{
-                if (!(iterator_name in components.iterators)) {
-                    return original;
-                }
-                // }}}
-
-                var iterator = 
-                        components.iterators[iterator_name];
-
-                if (Array.isArray(iterator)) {
-                    var output = '';
-
-                    for (var i = 0; i < iterator.length; i++) {
-                        var item = iterator[i];
-
-                        output += content.replace(/{{\s*\.\s*}}/, item);
-                    }
-
-                    return output;
-                }
-
-                return original;
-            }
-        );
-        // }}}
-
-        // Tags {{ tag }} {{{
-        string = string.replace(/{{\s*(\w+?)\s*}}/g, 
-            function (original, tag_name) {  
-                // keep original if unknown tag name {{{
-                if (!(tag_name in components.tags)) {
-                    return original;
-                }
-                // }}}
-
-                var tag_val = components.tags[tag_name];
-
-                if (typeof tag_val === 'function') {
-                    return tag_val();
-                }
-
-                if (typeof tag_val === 'string' || typeof tag_val === 'number') {
-                    return tag_val;
-                }
-
-                return original;
-            }
-        );
-        // }}}
-
-        return string;
-    };
-    // }}}
-    
     // actions {{{
     var actions = {
 
