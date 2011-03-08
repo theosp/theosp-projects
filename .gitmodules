@@ -1,0 +1,3 @@
+[submodule "theosp-nodejs-template-engine"]
+	path = theosp-nodejs-template-engine
+	url = git@github.com:theosp/theosp-nodejs-template-engine.git
