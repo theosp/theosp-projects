@@ -78,6 +78,10 @@
                 if (project.apis.hasOwnProperty(api_key)) {
                     var api = project.apis[api_key];
 
+                    if (typeof api.type === 'undefined') {
+                        api.type = "standard"
+                    }
+
                     (function (api) {
                         // generate api's templates components {{{
                         var templates_components = {
