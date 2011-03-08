@@ -17,10 +17,10 @@
   script: apis/{{ underscored_entity_name }}.py
 # }}}
 
-3. Add to the Makefile ADMIN_FRONTEND_JS_FILES var:
+3. Add to the Makefile ADMIN_FRONTEND_BASE_JS_FILES var:
     ${JS_SRC_DIR}/apis/{{ underscored_entity_name }}.js\
-    ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_editor.js\
-    ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_section.js\
+    ${JS_SRC_DIR}/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js\
+    ${JS_SRC_DIR}/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js\
 
 4. Add to /frontends/admin.html: 
         <h2>Edit</h2>
