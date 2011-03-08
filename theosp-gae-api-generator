@@ -168,7 +168,8 @@
 
                             // iterators {{{
                             iterators: {
-                                allowed_mime_types: (typeof api.allowed_mime_types !== "undefined") ? api.allowed_mime_types : []
+                                allowed_mime_types: (typeof api.allowed_mime_types !== "undefined") ? api.allowed_mime_types : [],
+                                properties: (typeof api.properties !== "undefined") ? api.properties : []
                             }
                             // }}}
                             
