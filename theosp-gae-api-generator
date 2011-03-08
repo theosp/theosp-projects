@@ -266,7 +266,6 @@
 
             // action_args {{{
             action_args = argv.slice(1);
-            console.log(action_args);
             // }}}
 
             return {action: action, args: action_args};
