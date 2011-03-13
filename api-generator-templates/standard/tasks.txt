@@ -1,6 +1,4 @@
-1. Check |TODO| on $api_python_module_path
-
-2. Drop the following lines to app.yaml:
+1. Drop the following lines to app.yaml:
 
 # {{ underscored_entity_name }} API {{{
 # admin parts {{{
@@ -17,12 +15,12 @@
   script: apis/{{ underscored_entity_name }}.py
 # }}}
 
-3. Add to the Makefile ADMIN_FRONTEND_JS_FILES var:
+2. Add to the Makefile ADMIN_FRONTEND_JS_FILES var:
     ${JS_SRC_DIR}/apis/{{ underscored_entity_name }}.js\
     ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_editor.js\
     ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_section.js\
 
-4. Add to /frontends/admin.html: 
+3. Add to /frontends/admin.html: 
         <h2>Edit</h2>
         <ul>
             <li><a id="open-{{ underscored_pluralized_entity_name }}-editor" href="javascript:void(0);">{{ readable_capitalized_pluralized_entity_name }}</a></li>
