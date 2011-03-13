@@ -308,7 +308,7 @@
         var opts = getOpts(process.argv);
 
         // if action isn't help {{{
-        if (opts.action != "help") {
+        if (opts.action !== "help") {
             // normalize conf_file option {{{
             if (options.conf_file.indexOf('/') === -1) {
                 options.conf_file = './' + options.conf_file;
