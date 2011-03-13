@@ -1,0 +1,61 @@
+Theosp Projects
+===============
+
+project.conf structure
+----------------------
+
+project_path
+    (string) The **full path** to the project repository.
+
+domain
+    (string) The project domain (only domain, without protocol or slashes).
+
+apis
+    (object) Holds objects defining the different project apis. The key can be
+    used later to refer to the api by the theosp-gae-api-generator. 
+
+api object structure
+--------------------
+
+entity_name
+    (string) The camel cased human readable entity name.
+
+pluralized_entity_name
+    (string) The camel cased pluralized human readable entity name.
+
+type
+    (string; default="standard") The api type: standard/file_system.
+
+images_preview
+    (bool; default=true) Has effect only when type is file_system.
+
+mime_types_restriced
+    (bool; default=false) Has effect only when type is file_system.
+
+allowed_mime_types
+    (bool; default=[]) Has effect only when type is file_system, and
+    mime_types_restriced is true.
+
+properties
+    (array; default=[]) Currently has effect only when type is standard.
+
+property object
+---------------
+
+name
+    (string) the all lower-cased property name.
+
+readable_name
+    (string) the human readable camel cased readable property name.
+
+model_definition
+    (string) example: 'db.TextProperty(default="")'
+
+show_on_admin_frontend_section_table
+    (bool)
+
+admin_editor_css_class
+    (string)
+
+admin_editor_default_value
+    (string)

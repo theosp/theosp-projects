@@ -148,12 +148,16 @@
 
                                 // admin_section_table_cols_count {{{
                                 admin_section_table_cols_count: function () {
-                                    // If images preview
-                                    if (typeof api.images_preview !== 'undefined' && api.images_preview === true) {
-                                        return 7;
-                                    }
+                                    if (api.type === "file_system") {
+                                        // If images preview
+                                        if (typeof api.images_preview !== 'undefined' && api.images_preview === true) {
+                                            return 7;
+                                        }
 
-                                    return 6;
+                                        return 6;
+                                    } else if (api.type === "standard") {
+                                        return api.properties.length + 4;
+                                    }
                                 }
                                 // }}}
                             },
@@ -161,15 +165,41 @@
 
                             // Conditional sections {{{
                             conditional_sections: {
+                                // show_images_preview {{{
                                 show_images_preview: (typeof api.images_preview !== 'undefined' && api.images_preview === true) ? true : false,
+                                // }}}
+                                
+                                // mime_types_restriced {{{
                                 mime_types_restriced: (typeof api.mime_types_restriced !== 'undefined' && api.mime_types_restriced === true) ? true : false
+                                // }}}
                             },
                             // }}}
 
                             // iterators {{{
                             iterators: {
+                                // allowed_mime_types {{{
                                 allowed_mime_types: (typeof api.allowed_mime_types !== "undefined") ? api.allowed_mime_types : [],
-                                properties: (typeof api.properties !== "undefined") ? api.properties : []
+                                // }}}
+
+                                // properties {{{
+                                properties: (typeof api.properties !== "undefined") ? api.properties : [],
+                                // }}}
+                                
+                                // admin_frontend_section_table_properties {{{
+                                admin_frontend_section_table_properties: (function () {
+                                    var iterator = [];
+
+                                    for (var i = 0; i < api.properties.length; i++) {
+                                        var property = api.properties[i];
+
+                                        if (typeof property.show_on_admin_frontend_section_table !== 'undefined' && property.show_on_admin_frontend_section_table === true) {
+                                            iterator.push({name: property.name, capitalized_name: property.name.charAt(0).toLowerCase() + property.name.substr(1), admin_editor_css_class: property.admin_editor_css_class, admin_editor_default_value: property.admin_editor_default_value});
+                                        }
+                                    }
+
+                                    return iterator;
+                                })()
+                                // }}}
                             }
                             // }}}
                             
