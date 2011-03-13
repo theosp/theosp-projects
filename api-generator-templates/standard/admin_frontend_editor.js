@@ -56,9 +56,9 @@ RERUIRES: Node.js's EventEmitter
     };
 
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.model = {
-        {% @admin_frontend_section_table_properties %}
+        {% @properties %}
         {{ item.name }}: {{ item.admin_editor_default_value }}{% !last %},{% /!last %}
-        {% /@admin_frontend_section_table_properties %}
+        {% /@properties %}
     };
     // }}}
 
@@ -90,9 +90,9 @@ RERUIRES: Node.js's EventEmitter
 
         if (self.key !== null) {
             $.{{ underscored_entity_name }}_api.get(self.key, function ({{ underscored_entity_name }}) {
-                {% @admin_frontend_section_table_properties %}
+                {% @properties %}
                 self.model.{{ item.name }} = {{ underscored_entity_name }}.{{ item.name }};
-                {% /@admin_frontend_section_table_properties %}
+                {% /@properties %}
 
                 self.initDom();
             });
@@ -124,14 +124,14 @@ RERUIRES: Node.js's EventEmitter
                                             '" />' +
                                         '</td>' +
                                     '</tr>' +
-                                    {% @admin_frontend_section_table_properties %}
+                                    {% @properties %}
                                     '<tr>' +
                                         '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
                                         '<td>' +
                                             '<input id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}" type="text" value="|{{ item.name }}|" />' +
                                         '</td>' +
                                     '</tr>' +
-                                    {% /@admin_frontend_section_table_properties %}
+                                    {% /@properties %}
                                 '</tbody>' +
                             '</table>' +
                             '<input type="submit" value="|submit_value|" id="|prefix|submit_button" /> ' +
@@ -141,9 +141,9 @@ RERUIRES: Node.js's EventEmitter
                  '</div>'
                 ), {prefix: self.options.css_prefix,
 
-                    {% @admin_frontend_section_table_properties %}
+                    {% @properties %}
                     {{ item.name }}: self.model.{{ item.name }},
-                    {% /@admin_frontend_section_table_properties %}
+                    {% /@properties %}
 
                     submit_value: self.key ? "Save" : "Add new {{ readable_noncapitalized_entity_name }}"
                 }
@@ -166,9 +166,9 @@ RERUIRES: Node.js's EventEmitter
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.save = function (callback) {
         var self = this;
 
-        {% @admin_frontend_section_table_properties %}
+        {% @properties %}
         self.model.{{ item.name }} = self.$('#|prefix|{{ item.name }}').val();
-        {% /@admin_frontend_section_table_properties %}
+        {% /@properties %}
 
         var action_url;
 
@@ -184,9 +184,9 @@ RERUIRES: Node.js's EventEmitter
             url: action_url,
             data: {
                 query: JSON.stringify({
-                    {% @admin_frontend_section_table_properties %}
+                    {% @properties %}
                     {{ item.name }}: self.model.{{ item.name }}{% !last %},{% /!last %}
-                    {% /@admin_frontend_section_table_properties %}
+                    {% /@properties %}
                 })
             },
             success: function (response) { 

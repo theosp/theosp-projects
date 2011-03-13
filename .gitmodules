@@ -1,3 +1,6 @@
 [submodule "theosp-nodejs-template-engine"]
 	path = theosp-nodejs-template-engine
 	url = git@github.com:theosp/theosp-nodejs-template-engine.git
+[submodule "theosp_common_js"]
+	path = theosp_common_js
+	url = git@github.com:theosp/theosp_common_js.git
