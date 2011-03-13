@@ -2,7 +2,8 @@
 
     // load modules {{{
     var fs = require('fs'),
-        populateTemplate = require('./theosp-nodejs-template-engine/template_engine').populateTemplate;
+        populateTemplate = require('./theosp-nodejs-template-engine/template_engine').populateTemplate,
+        theosp = require("./theosp_common_js/theosp");
     // }}}
 
     // options {{{
@@ -182,7 +183,23 @@
                                 // }}}
 
                                 // properties {{{
-                                properties: (typeof api.properties !== "undefined") ? api.properties : [],
+                                properties: (function () {
+                                    var iterator = [];
+
+                                    for (var i = 0; i < api.properties.length; i++) {
+                                        var property = api.properties[i];
+
+                                        iterator.push(
+                                            theosp.object.extend({}, property, 
+                                                {capitalized_name: 
+                                                    property.name.charAt(0).toLowerCase() + property.name.substr(1)
+                                                }
+                                            )
+                                        );
+                                    }
+
+                                    return iterator;
+                                })(),
                                 // }}}
                                 
                                 // admin_frontend_section_table_properties {{{
@@ -193,7 +210,13 @@
                                         var property = api.properties[i];
 
                                         if (typeof property.show_on_admin_frontend_section_table !== 'undefined' && property.show_on_admin_frontend_section_table === true) {
-                                            iterator.push({name: property.name, capitalized_name: property.name.charAt(0).toLowerCase() + property.name.substr(1), admin_editor_css_class: property.admin_editor_css_class, admin_editor_default_value: property.admin_editor_default_value});
+                                            iterator.push(
+                                                theosp.object.extend({}, property, 
+                                                    {capitalized_name: 
+                                                        property.name.charAt(0).toLowerCase() + property.name.substr(1)
+                                                    }
+                                                )
+                                            );
                                         }
                                     }
 
@@ -308,7 +331,7 @@
         var opts = getOpts(process.argv);
 
         // if action isn't help {{{
-        if (opts.action != "help") {
+        if (opts.action !== "help") {
             // normalize conf_file option {{{
             if (options.conf_file.indexOf('/') === -1) {
                 options.conf_file = './' + options.conf_file;
