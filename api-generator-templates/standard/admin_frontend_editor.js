@@ -125,12 +125,22 @@ RERUIRES: Node.js's EventEmitter
                                         '</td>' +
                                     '</tr>' +
                                     {% @properties %}
+                                    {% ?item.admin_editor_dom_element_input %}
                                     '<tr>' +
                                         '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
                                         '<td>' +
                                             '<input id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}" type="text" value="|{{ item.name }}|" />' +
                                         '</td>' +
                                     '</tr>' +
+                                    {% /?item.admin_editor_dom_element_input %}
+                                    {% ?item.admin_editor_dom_element_textarea %}
+                                    '<tr>' +
+                                        '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
+                                        '<td>' +
+                                            '<textarea id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}">|{{ item.name }}|</textarea>' +
+                                        '</td>' +
+                                    '</tr>' +
+                                    {% /?item.admin_editor_dom_element_textarea %}
                                     {% /@properties %}
                                 '</tbody>' +
                             '</table>' +

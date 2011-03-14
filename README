@@ -36,6 +36,12 @@ allowed_mime_types
     (bool; default=[]) Has effect only when type is file_system, and
     mime_types_restriced is true.
 
+admin_section_show_created_by_column
+    (bool; default=true)
+
+admin_section_show_modified_by_column
+    (bool; default=true)
+
 properties
     (array; default=[]) Currently has effect only when type is standard.
 
@@ -54,8 +60,16 @@ model_definition
 show_on_admin_frontend_section_table
     (bool)
 
+admin_editor_dom_element
+    (string; default="input") possible values: input, textarea
+
 admin_editor_css_class
-    (string)
+    (string; default="")
+
+    possible valuses for input: key, name, small_number, link, datepicker,
+    color, small_text, medium_text, text
+
+    possible valuses for textarea: html, description
 
 admin_editor_default_value
     (string)
