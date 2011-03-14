@@ -123,8 +123,15 @@ class Create(webapp.RequestHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
 
-        {{ underscored_entity_name }}.created_by = users.User()
-        {{ underscored_entity_name }}.modified_by = users.User()
+        try:
+            {{ underscored_entity_name }}.created_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.created_by = None
+
+        try:
+            {{ underscored_entity_name }}.modified_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.modified_by = None
 
         {{ underscored_entity_name }}.put()
 
@@ -151,7 +158,10 @@ class Save(webapp.RequestHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
 
-        {{ underscored_entity_name }}.modified_by = users.User()
+        try:
+            {{ underscored_entity_name }}.modified_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.modified_by = None
 
         {{ underscored_entity_name }}.put()
 
