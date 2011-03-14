@@ -42,6 +42,18 @@ admin_section_show_created_by_column
 admin_section_show_modified_by_column
     (bool; default=true)
 
+allow_guests_to_get_entity
+    (bool; default=false)
+
+allow_guests_to_list_entities
+    (bool; default=false)
+
+allow_guests_to_create_entities
+    (bool; default=false)
+
+allow_guests_to_edit_entities
+    (bool; default=false)
+
 properties
     (array; default=[]) Currently has effect only when type is standard.
 

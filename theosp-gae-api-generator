@@ -14,45 +14,61 @@
     // }}}
 
     // variables {{{
+
+        // templates files {{{
     var templates = {
 
-        // standard {{{
-        standard: {
-            "./api-generator-templates/standard/api.py":
-                "apis/{{ underscored_entity_name }}.py",
-            "./api-generator-templates/standard/api.js":
-                "javascript/src/apis/{{ underscored_entity_name }}.js",
-            "./api-generator-templates/standard/admin_frontend_section.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-            "./api-generator-templates/standard/admin_frontend_editor.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
-            "./api-generator-templates/standard/model.py":
-                "apis/models/{{ underscored_entity_name }}.py"
+            // standard {{{
+            standard: {
+                "./api-generator-templates/standard/api.py":
+                    "apis/{{ underscored_entity_name }}.py",
+                "./api-generator-templates/standard/api.js":
+                    "javascript/src/apis/{{ underscored_entity_name }}.js",
+                "./api-generator-templates/standard/admin_frontend_section.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
+                "./api-generator-templates/standard/admin_frontend_editor.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
+                "./api-generator-templates/standard/model.py":
+                    "apis/models/{{ underscored_entity_name }}.py"
+            },
+            // }}}
+
+            // file_system {{{
+            file_system: {
+                "./api-generator-templates/file_system/api.py":
+                    "apis/{{ underscored_entity_name }}.py",
+                "./api-generator-templates/file_system/api.js":
+                    "javascript/src/apis/{{ underscored_entity_name }}.js",
+                "./api-generator-templates/file_system/admin_frontend_section.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
+                "./api-generator-templates/file_system/admin_frontend_uploader.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
+                "./api-generator-templates/file_system/model.py":
+                    "apis/models/{{ underscored_entity_name }}.py"
+            }
+            // }}}
+
         },
         // }}}
 
-        // file_system {{{
-        file_system: {
-            "./api-generator-templates/file_system/api.py":
-                "apis/{{ underscored_entity_name }}.py",
-            "./api-generator-templates/file_system/api.js":
-                "javascript/src/apis/{{ underscored_entity_name }}.js",
-            "./api-generator-templates/file_system/admin_frontend_section.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-            "./api-generator-templates/file_system/admin_frontend_uploader.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
-            "./api-generator-templates/file_system/model.py":
-                "apis/models/{{ underscored_entity_name }}.py"
-        }
+        // validations {{{
+        valid_admin_editor_dom_element = {input: undefined, textarea: undefined},
         // }}}
 
-    },
-        valid_admin_editor_dom_element = {input: undefined, textarea: undefined},
+        // defaults {{{
         default_admin_editor_dom_element = "input",
         default_admin_editor_css_class = "",
         default_admin_section_show_created_by_column = true,
         default_admin_section_show_modified_by_column = true,
-        default_api_type = "standard";
+        default_api_type = "standard",
+        default_allow_guests_to_get_entity = false,
+        default_allow_guests_to_list_entities = false,
+        default_allow_guests_to_create_entities = false,
+        default_allow_guests_to_edit_entities = false;
+        default_show_images_preview = true;
+        default_mime_types_restriced = false;
+        // }}}
+    
     // }}}
 
     // actions {{{
@@ -99,17 +115,61 @@
                     var api = apis[api_key];
 
                     // set api options defaults {{{
+
+                    // api.type {{{
                     if (typeof api.type === 'undefined') {
                         api.type = default_api_type;
                     }
+                    // }}}
 
+                    // api.admin_section_show_created_by_column {{{
                     if (typeof api.admin_section_show_created_by_column === 'undefined') {
                         api.admin_section_show_created_by_column = default_admin_section_show_created_by_column;
                     }
+                    // }}}
 
+                    // api.admin_section_show_modified_by_column {{{
                     if (typeof api.admin_section_show_modified_by_column === 'undefined') {
                         api.admin_section_show_modified_by_column = default_admin_section_show_modified_by_column;
                     }
+                    // }}}
+
+                    // api.allow_guests_to_get_entity {{{
+                    if (typeof api.allow_guests_to_get_entity === 'undefined') {
+                        api.allow_guests_to_get_entity = default_allow_guests_to_get_entity;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_list_entities {{{
+                    if (typeof api.allow_guests_to_list_entities === 'undefined') {
+                        api.allow_guests_to_list_entities = default_allow_guests_to_list_entities;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_create_entities {{{
+                    if (typeof api.allow_guests_to_create_entities === 'undefined') {
+                        api.allow_guests_to_create_entities = default_allow_guests_to_create_entities;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_edit_entities {{{
+                    if (typeof api.allow_guests_to_edit_entities === 'undefined') {
+                        api.allow_guests_to_edit_entities = default_allow_guests_to_edit_entities;
+                    }
+                    // }}}
+
+                    // api.show_images_preview {{{
+                    if (typeof api.show_images_preview === 'undefined') {
+                        api.show_images_preview = default_show_images_preview;
+                    }
+                    // }}}
+
+                    // api.mime_types_restriced {{{
+                    if (typeof api.mime_types_restriced === 'undefined') {
+                        api.mime_types_restriced = default_mime_types_restriced;
+                    }
+                    // }}}
+
                     // }}}
 
                     (function (api) {
@@ -238,19 +298,35 @@
                             conditional_sections: {
 
                                 // show_images_preview {{{
-                                show_images_preview: (typeof api.images_preview !== 'undefined' && api.images_preview === true) ? true : false,
+                                show_images_preview: api.images_preview,
                                 // }}}
                                 
                                 // mime_types_restriced {{{
-                                mime_types_restriced: (typeof api.mime_types_restriced !== 'undefined' && api.mime_types_restriced === true) ? true : false,
+                                mime_types_restriced: api.mime_types_restriced,
                                 // }}}
 
                                 // admin_section_show_created_by_column {{{
-                                admin_section_show_created_by_column: (typeof api.admin_section_show_created_by_column !== 'undefined' && api.admin_section_show_created_by_column === true) ? true : false,
+                                admin_section_show_created_by_column: api.admin_section_show_created_by_column,
                                 // }}}
 
                                 // admin_section_show_modified_by_column {{{
-                                admin_section_show_modified_by_column: (typeof api.admin_section_show_modified_by_column !== 'undefined' && api.admin_section_show_modified_by_column === true) ? true : false
+                                admin_section_show_modified_by_column: api.admin_section_show_modified_by_column,
+                                // }}}
+
+                                // allow_guests_to_get_entity {{{
+                                allow_guests_to_get_entity: api.allow_guests_to_get_entity,
+                                // }}}
+
+                                // allow_guests_to_list_entities {{{
+                                allow_guests_to_list_entities: api.allow_guests_to_list_entities,
+                                // }}}
+
+                                // allow_guests_to_create_entities {{{
+                                allow_guests_to_create_entities: api.allow_guests_to_create_entities,
+                                // }}}
+
+                                // allow_guests_to_edit_entities {{{
+                                allow_guests_to_edit_entities: api.allow_guests_to_edit_entities
                                 // }}}
 
                             },
