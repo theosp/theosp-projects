@@ -14,39 +14,61 @@
     // }}}
 
     // variables {{{
+
+        // templates files {{{
     var templates = {
 
-        // standard {{{
-        standard: {
-            "./api-generator-templates/standard/api.py":
-                "apis/{{ underscored_entity_name }}.py",
-            "./api-generator-templates/standard/api.js":
-                "javascript/src/apis/{{ underscored_entity_name }}.js",
-            "./api-generator-templates/standard/admin_frontend_section.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-            "./api-generator-templates/standard/admin_frontend_editor.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
-            "./api-generator-templates/standard/model.py":
-                "apis/models/{{ underscored_entity_name }}.py"
+            // standard {{{
+            standard: {
+                "./api-generator-templates/standard/api.py":
+                    "apis/{{ underscored_entity_name }}.py",
+                "./api-generator-templates/standard/api.js":
+                    "javascript/src/apis/{{ underscored_entity_name }}.js",
+                "./api-generator-templates/standard/admin_frontend_section.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
+                "./api-generator-templates/standard/admin_frontend_editor.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
+                "./api-generator-templates/standard/model.py":
+                    "apis/models/{{ underscored_entity_name }}.py"
+            },
+            // }}}
+
+            // file_system {{{
+            file_system: {
+                "./api-generator-templates/file_system/api.py":
+                    "apis/{{ underscored_entity_name }}.py",
+                "./api-generator-templates/file_system/api.js":
+                    "javascript/src/apis/{{ underscored_entity_name }}.js",
+                "./api-generator-templates/file_system/admin_frontend_section.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
+                "./api-generator-templates/file_system/admin_frontend_uploader.js":
+                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
+                "./api-generator-templates/file_system/model.py":
+                    "apis/models/{{ underscored_entity_name }}.py"
+            }
+            // }}}
+
         },
         // }}}
 
-        // file_system {{{
-        file_system: {
-            "./api-generator-templates/file_system/api.py":
-                "apis/{{ underscored_entity_name }}.py",
-            "./api-generator-templates/file_system/api.js":
-                "javascript/src/apis/{{ underscored_entity_name }}.js",
-            "./api-generator-templates/file_system/admin_frontend_section.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-            "./api-generator-templates/file_system/admin_frontend_uploader.js":
-                "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
-            "./api-generator-templates/file_system/model.py":
-                "apis/models/{{ underscored_entity_name }}.py"
-        }
+        // validations {{{
+        valid_admin_editor_dom_element = {input: undefined, textarea: undefined},
         // }}}
 
-    };
+        // defaults {{{
+        default_admin_editor_dom_element = "input",
+        default_admin_editor_css_class = "",
+        default_admin_section_show_created_by_column = true,
+        default_admin_section_show_modified_by_column = true,
+        default_api_type = "standard",
+        default_allow_guests_to_get_entity = false,
+        default_allow_guests_to_list_entities = false,
+        default_allow_guests_to_create_entities = false,
+        default_allow_guests_to_edit_entities = false;
+        default_show_images_preview = true;
+        default_mime_types_restriced = false;
+        // }}}
+    
     // }}}
 
     // actions {{{
@@ -92,11 +114,106 @@
                 if (apis.hasOwnProperty(api_key)) {
                     var api = apis[api_key];
 
+                    // set api options defaults {{{
+
+                    // api.type {{{
                     if (typeof api.type === 'undefined') {
-                        api.type = "standard";
+                        api.type = default_api_type;
                     }
+                    // }}}
+
+                    // api.admin_section_show_created_by_column {{{
+                    if (typeof api.admin_section_show_created_by_column === 'undefined') {
+                        api.admin_section_show_created_by_column = default_admin_section_show_created_by_column;
+                    }
+                    // }}}
+
+                    // api.admin_section_show_modified_by_column {{{
+                    if (typeof api.admin_section_show_modified_by_column === 'undefined') {
+                        api.admin_section_show_modified_by_column = default_admin_section_show_modified_by_column;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_get_entity {{{
+                    if (typeof api.allow_guests_to_get_entity === 'undefined') {
+                        api.allow_guests_to_get_entity = default_allow_guests_to_get_entity;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_list_entities {{{
+                    if (typeof api.allow_guests_to_list_entities === 'undefined') {
+                        api.allow_guests_to_list_entities = default_allow_guests_to_list_entities;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_create_entities {{{
+                    if (typeof api.allow_guests_to_create_entities === 'undefined') {
+                        api.allow_guests_to_create_entities = default_allow_guests_to_create_entities;
+                    }
+                    // }}}
+
+                    // api.allow_guests_to_edit_entities {{{
+                    if (typeof api.allow_guests_to_edit_entities === 'undefined') {
+                        api.allow_guests_to_edit_entities = default_allow_guests_to_edit_entities;
+                    }
+                    // }}}
+
+                    // api.show_images_preview {{{
+                    if (typeof api.show_images_preview === 'undefined') {
+                        api.show_images_preview = default_show_images_preview;
+                    }
+                    // }}}
+
+                    // api.mime_types_restriced {{{
+                    if (typeof api.mime_types_restriced === 'undefined') {
+                        api.mime_types_restriced = default_mime_types_restriced;
+                    }
+                    // }}}
+
+                    // }}}
 
                     (function (api) {
+                        var extended_properties = [];
+
+                        // api's extended_properties {{{
+                        for (var i = 0; i < api.properties.length; i++) {
+                            var property = api.properties[i];
+
+                            // initiate extended_property {{{
+                            var extended_property = 
+                                    theosp.object.extend({}, property, 
+                                        {capitalized_name: 
+                                            property.name.charAt(0).toUpperCase() + property.name.substr(1),
+                                         admin_editor_css_class:
+                                            (typeof property.admin_editor_css_class !== "undefined") ?
+                                                property.admin_editor_css_class :
+                                                default_admin_editor_css_class
+                                        }
+                                    );
+                            // }}}
+
+                            // set admin_editor_dom_element to its default if undefined or has invalid value {{{
+                            if (typeof extended_property.admin_editor_dom_element === 'undefined' || !(extended_property.admin_editor_dom_element in valid_admin_editor_dom_element)) {
+                                extended_property.admin_editor_dom_element = default_admin_editor_dom_element;
+                            }
+                            // }}}
+
+                            // add properties that enables checking for the admin_editor_dom_element state from within the template {{{
+
+                            // first set all to false
+                            for (var dom_element in valid_admin_editor_dom_element) {
+                                if (valid_admin_editor_dom_element.hasOwnProperty(dom_element)) {
+                                    extended_property['admin_editor_dom_element_' + dom_element] = false;
+                                }
+                            }
+
+                            extended_property['admin_editor_dom_element_' + extended_property.admin_editor_dom_element] = true;
+                            // }}}
+
+                            extended_properties.push(extended_property);
+                        }
+                        // }}}
+
                         // generate api's templates components {{{
                         var templates_components = {
 
@@ -157,7 +274,20 @@
 
                                         return 6;
                                     } else if (api.type === "standard") {
-                                        return api.properties.length + 4;
+                                        // Created, Modified always present
+                                        var cols = 2;
+
+                                        cols += api.properties.length;
+
+                                        if (api.admin_section_show_created_by_column === true) {
+                                            cols += 1;
+                                        }
+
+                                        if (api.admin_section_show_modified_by_column === true) {
+                                            cols += 1;
+                                        }
+
+                                        return cols;
                                     }
                                 }
                                 // }}}
@@ -166,13 +296,39 @@
 
                             // Conditional sections {{{
                             conditional_sections: {
+
                                 // show_images_preview {{{
-                                show_images_preview: (typeof api.images_preview !== 'undefined' && api.images_preview === true) ? true : false,
+                                show_images_preview: api.images_preview,
                                 // }}}
                                 
                                 // mime_types_restriced {{{
-                                mime_types_restriced: (typeof api.mime_types_restriced !== 'undefined' && api.mime_types_restriced === true) ? true : false
+                                mime_types_restriced: api.mime_types_restriced,
                                 // }}}
+
+                                // admin_section_show_created_by_column {{{
+                                admin_section_show_created_by_column: api.admin_section_show_created_by_column,
+                                // }}}
+
+                                // admin_section_show_modified_by_column {{{
+                                admin_section_show_modified_by_column: api.admin_section_show_modified_by_column,
+                                // }}}
+
+                                // allow_guests_to_get_entity {{{
+                                allow_guests_to_get_entity: api.allow_guests_to_get_entity,
+                                // }}}
+
+                                // allow_guests_to_list_entities {{{
+                                allow_guests_to_list_entities: api.allow_guests_to_list_entities,
+                                // }}}
+
+                                // allow_guests_to_create_entities {{{
+                                allow_guests_to_create_entities: api.allow_guests_to_create_entities,
+                                // }}}
+
+                                // allow_guests_to_edit_entities {{{
+                                allow_guests_to_edit_entities: api.allow_guests_to_edit_entities
+                                // }}}
+
                             },
                             // }}}
 
@@ -183,31 +339,15 @@
                                 // }}}
 
                                 // properties {{{
-                                properties: (function () {
-                                    var iterator = [];
-
-                                    for (var i = 0; i < api.properties.length; i++) {
-                                        var property = api.properties[i];
-
-                                        iterator.push(
-                                            theosp.object.extend({}, property, 
-                                                {capitalized_name: 
-                                                    property.name.charAt(0).toLowerCase() + property.name.substr(1)
-                                                }
-                                            )
-                                        );
-                                    }
-
-                                    return iterator;
-                                })(),
+                                properties: extended_properties,
                                 // }}}
                                 
                                 // admin_frontend_section_table_properties {{{
                                 admin_frontend_section_table_properties: (function () {
                                     var iterator = [];
 
-                                    for (var i = 0; i < api.properties.length; i++) {
-                                        var property = api.properties[i];
+                                    for (var i = 0; i < extended_properties.length; i++) {
+                                        var property = extended_properties[i];
 
                                         if (typeof property.show_on_admin_frontend_section_table !== 'undefined' && property.show_on_admin_frontend_section_table === true) {
                                             iterator.push(
