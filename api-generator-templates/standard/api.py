@@ -76,6 +76,7 @@ class All(webapp.RequestHandler):
         page = self.request.GET.get('page') or 1
         order_by = self.request.GET.get('order_by') or '-date_modified'
 
+        page_size = int(page_size)
         page = int(page)
 
         {{ underscored_pluralized_entity_name }}_query = {{ camelcased_entity_name }}.all().order(order_by)
