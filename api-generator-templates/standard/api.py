@@ -72,6 +72,7 @@ class All(webapp.RequestHandler):
     """Return an object with all the {{ readable_noncapitalized_pluralized_entity_name }} objects
     """
     def get(self):
+        callback = self.request.GET.get('callback') or None
         page_size = self.request.GET.get('page_size') or 30
         page = self.request.GET.get('page') or 1
         order_by = self.request.GET.get('order_by') or '-date_modified'
@@ -85,12 +86,17 @@ class All(webapp.RequestHandler):
         results = paged_query.fetch_page(page)
         pages_count = paged_query.page_count()
 
-        response = {'{{ underscored_pluralized_entity_name }}': SortedDict(), 'pager': {'pages_count': pages_count}}
+        response_object = {'{{ underscored_pluralized_entity_name }}': SortedDict(), 'pager': {'pages_count': pages_count}}
         for {{ underscored_entity_name }} in results:
             key = str({{ underscored_entity_name }}.key())
-            response['{{ underscored_pluralized_entity_name }}'][key] = {{ underscored_entity_name }}
+            response_object['{{ underscored_pluralized_entity_name }}'][key] = {{ underscored_entity_name }}
 
-        return self.response.out.write(json.dumps(response, cls=JsonEncoder))
+        response = json.dumps(response_object, cls=JsonEncoder)
+
+        if callback is not None:
+            response = callback + "(" + response + ");"
+
+        return self.response.out.write(response)
 # }}}
 
 # Get {{{
@@ -98,6 +104,8 @@ class Get(webapp.RequestHandler):
     """Retrun a {{ readable_noncapitalized_entity_name }} object 
     """
     def get(self):
+        callback = self.request.GET.get('callback') or None
+
         status, object = _get_path_{{ underscored_entity_name }}(self.request.path)
 
         if status != 200:
@@ -106,7 +114,12 @@ class Get(webapp.RequestHandler):
         else:
             {{ underscored_entity_name }} = object # just to improve readability
 
-        return self.response.out.write(json.dumps({{ underscored_entity_name }}, cls=JsonEncoder))
+        response = json.dumps({{ underscored_entity_name }}, cls=JsonEncoder)
+
+        if callback is not None:
+            response = callback + "(" + response + ");"
+
+        return self.response.out.write(response)
 # }}}
 
 # Create {{{
