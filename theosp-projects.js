@@ -218,7 +218,6 @@
                                                                 verboseExec('git push origin master', 
                                                                     {cwd: options.project_path},
                                                                     function () {
-                                                                        console.log('daniel');
                                                                     }
                                                                 );
                                                             }
