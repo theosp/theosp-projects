@@ -1,0 +1,11 @@
+Theosp Projects
+===============
+
+project.conf structure
+----------------------
+
+project_path
+    (string) The **full path** to the local project repository.
+
+github_rep
+    (string) The username/rep for the remote github repository of this project.
