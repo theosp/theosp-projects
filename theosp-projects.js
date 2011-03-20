@@ -42,6 +42,7 @@
         submodules = {
             "git@github.com:theosp/theosp_common_build_tools.git": "build",
             "git@github.com:theosp/theosp_common_js.git": "javascript/src/theosp_common_js",
+            "git@github.com:theosp/razoss_common_js.git": "javascript/src/razoss_common_js",
             "git@github.com:theosp/theosp_common_css.git": "style/src/theosp_common_css",
             "git@github.com:theosp/headjs.git": "javascript/src/headjs"
         };
