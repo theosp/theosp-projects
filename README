@@ -16,6 +16,9 @@ readable_name
 github_rep
     (string) The username/rep for the remote github repository of this project.
 
+gae_app_name
+    (string) The project's Google App Engine application name
+
 apis
     (object) Holds objects defining the different project apis. The key can be
     used later to refer to the api by the theosp-gae-api-generator. 

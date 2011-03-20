@@ -18,32 +18,119 @@
     // variables {{{
     var project = null, // project is loaded in main()
         project_directory_structure = {
-            javascript: {
-                src: undefined
+            apis: {
+                helpers: undefined,
+                models: undefined,
+                settings: undefined,
+                templates: undefined
             },
+            frontends: undefined,
+            javascript: {
+                src: {
+                    apis: undefined,
+                    frontends: {
+                        admin: undefined
+                    }
+                }
+            },
+            lib: undefined,
+            media: undefined,
             style: {
-                src: undefined
+                src: {
+                    frontends: {
+                        admin: undefined
+                    }
+                }
             }
         },
         skeleton_templates = {
+            './skeleton/apis/helpers/__init__.py':
+                'apis/helpers/__init__.py',
+            './skeleton/apis/helpers/paging.py':
+                'apis/helpers/paging.py',
+            './skeleton/apis/models/__init__.py':
+                'apis/models/__init__.py',
+            './skeleton/apis/models/files_system.py':
+                'apis/models/files_system.py',
+            './skeleton/apis/templates/error.html':
+                'apis/templates/error.html',
+            './skeleton/apis/templates/login.html':
+                'apis/templates/login.html',
+            './skeleton/apis/__init__.py':
+                'apis/__init__.py',
+            './skeleton/apis/appengine_admin_wrapper.py':
+                'apis/appengine_admin_wrapper.py',
+            './skeleton/apis/datastore_admin_wrapper.py':
+                'apis/datastore_admin_wrapper.py',
+            './skeleton/apis/frontend.py':
+                'apis/frontend.py',
+            './skeleton/apis/login.py':
+                'apis/login.py',
+            './skeleton/apis/memcache.py':
+                'apis/memcache.py',
+            './skeleton/apis/user.py':
+                'apis/user.py',
+
+            './skeleton/frontends/admin.html':
+                'frontends/admin.html',
+            './skeleton/frontends/home.html':
+                'frontends/home.html',
+
+            './skeleton/javascript/src/apis/user.js':
+                'javascript/src/apis/user.js',
+            './skeleton/javascript/src/frontends/admin/sections_prototype.js':
+                'javascript/src/frontends/admin/sections_prototype.js',
+
+            './skeleton/lib/__init__.py':
+                'lib/__init__.py',
+
+            './skeleton/media/favicon.ico':
+                'media/favicon.ico',
+
+            './skeleton/style/src/frontends/admin/admin.css.less':
+                'style/src/frontends/admin/admin.css.less',
             './skeleton/style/src/base.css.less':
                 'style/src/base.css.less',
-            './skeleton/index.html':
-                'index.html',
+
+            './skeleton/__init__.py':
+                '__init__.py',
+            './skeleton/app.yaml':
+                'app.yaml',
+            './skeleton/clean_pyc':
+                'clean_pyc',
+            './skeleton/gae-server.sh':
+                'gae-server.sh',
+            './skeleton/gae-update.sh':
+                'gae-update.sh',
             './skeleton/Makefile':
                 'Makefile',
+            './skeleton/non_gae_indicator':
+                'non_gae_indicator',
             './skeleton/production_files_headers.txt':
                 'production_files_headers.txt',
             './skeleton/README.rst':
                 'README.rst',
+            './skeleton/settings.py':
+                'settings.py',
+            './skeleton/urls.py':
+                'urls.py',
             './skeleton/.gitignore':
                 '.gitignore'
         },
         submodules = {
+            // base {{{
             "git@github.com:theosp/theosp_common_build_tools.git": "build",
             "git@github.com:theosp/theosp_common_js.git": "javascript/src/theosp_common_js",
             "git@github.com:theosp/theosp_common_css.git": "style/src/theosp_common_css",
-            "git@github.com:theosp/headjs.git": "javascript/src/headjs"
+            "git@github.com:theosp/headjs.git": "javascript/src/headjs",
+            // }}}
+
+            // app engine {{{
+            "git@github.com:theosp/google_appengine.git": "google_appengine",
+            "git@github.com:theosp/appengine_django.git": "appengine_django",
+            "git@github.com:theosp/simplejson.git": "lib/simplejson",
+            "https://github.com/django/django.git": "django-dist"
+            // }}}
         };
     // }}}
 
@@ -245,7 +332,8 @@
 
                 // Tags {{{
                 tags: {
-                    project_readable_name: project.readable_name
+                    project_readable_name: project.readable_name,
+                    gae_app_name: project.gae_app_name
                 },
                 // }}}
 
