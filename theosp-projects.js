@@ -35,7 +35,9 @@
             './skeleton/production_files_headers.txt':
                 'production_files_headers.txt',
             './skeleton/README.rst':
-                'README.rst'
+                'README.rst',
+            './skeleton/.gitignore':
+                '.gitignore'
         },
         submodules = {
             "git@github.com:theosp/theosp_common_build_tools.git": "build",
