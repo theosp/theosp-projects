@@ -245,6 +245,7 @@
 
                 // Tags {{{
                 tags: {
+                    project_readable_name: project.readable_name
                 },
                 // }}}
 
