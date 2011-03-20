@@ -5,15 +5,21 @@ project.conf structure
 ----------------------
 
 project_path
-    (string) The **full path** to the project repository.
+    (string) The **full path** to the local project repository.
 
 domain
     (string) The project domain (only domain, without protocol or slashes).
 
+readable_name
+    (String) The human-readable project name.
+
+github_rep
+    (string) The username/rep for the remote github repository of this project.
+
 apis
     (object) Holds objects defining the different project apis. The key can be
     used later to refer to the api by the theosp-gae-api-generator. 
-
+    
 api object structure
 --------------------
 
