@@ -304,7 +304,7 @@
                                         // Created, Modified always present
                                         var cols = 2;
 
-                                        cols += api.properties.length;
+                                        cols += templates_components.iterators.admin_frontend_section_table_properties.length;
 
                                         if (api.admin_section_show_created_by_column === true) {
                                             cols += 1;
