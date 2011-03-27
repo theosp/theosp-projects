@@ -68,7 +68,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                             '<thead>' +
                                 '<tr>' +
                                     {% @admin_frontend_section_table_properties %}
-                                    '<th class="|prefix|order_bys" id="|prefix|order_by_{{ item.name }}">{{ item.capitalized_name }}</th>' +
+                                    '<th class="|prefix|order_bys" id="|prefix|order_by_{{ item.underscored_name }}">{{ item.readable_capitalized_name }}</th>' +
                                     {% /@admin_frontend_section_table_properties %}
                                     {% ?admin_section_show_created_by_column %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_created_by">Created By</th>' +
@@ -150,7 +150,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                             (
                                 '<tr class="|prefix|{{ underscored_pluralized_entity_name }}_row" id="|prefix|entity_row_|{{ underscored_entity_name }}_id|">' +
                                     {% @admin_frontend_section_table_properties %}
-                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_{{ item.name }}">|{{ item.name }}|</td>' + 
+                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_{{ item.underscored_name }}">|{{ item.underscored_name }}|</td>' + 
                                     {% /@admin_frontend_section_table_properties %}
                                     {% ?admin_section_show_created_by_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_created_by">|created_by|</td>' + 
@@ -166,7 +166,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                                 {{ underscored_entity_name }}_id: {{ underscored_entity_name }}_id,
 
                                 {% @admin_frontend_section_table_properties %}
-                                {{ item.name }}: {{ underscored_entity_name }}.{{ item.name }},
+                                {{ item.underscored_name }}: {{ underscored_entity_name }}.{{ item.underscored_name }},
                                 {% /@admin_frontend_section_table_properties %}
                                 {% ?admin_section_show_created_by_column %}
                                 created_by: {{ underscored_entity_name }}.created_by._User__email,

@@ -69,9 +69,6 @@ properties
 property object
 ---------------
 
-name
-    (string) the all lower-cased property name.
-
 readable_name
     (string) the human readable camel cased readable property name.
 
