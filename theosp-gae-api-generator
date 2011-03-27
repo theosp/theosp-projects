@@ -173,21 +173,48 @@
                     // }}}
 
                     (function (api) {
-                        var extended_properties = [];
 
                         // api's extended_properties {{{
+                        var extended_properties = [];
+
                         for (var i = 0; i < api.properties.length; i++) {
                             var property = api.properties[i];
 
                             // initiate extended_property {{{
                             var extended_property = 
                                     theosp.object.extend({}, property, 
-                                        {capitalized_name: 
-                                            property.name.charAt(0).toUpperCase() + property.name.substr(1),
+                                        {
+                                         // admin_editor_css_class {{{
                                          admin_editor_css_class:
                                             (typeof property.admin_editor_css_class !== "undefined") ?
                                                 property.admin_editor_css_class :
-                                                default_admin_editor_css_class
+                                                default_admin_editor_css_class,
+                                         // }}}
+
+                                         // readable_capitalized_name {{{
+                                         readable_capitalized_name: property.readable_name,
+                                         // }}}
+                                         
+                                         // readable_noncapitalized_name {{{
+                                         readable_noncapitalized_name: property.readable_name.toLowerCase(),
+                                         // }}}
+                                         
+                                         // underscored_name {{{
+                                         underscored_name: property.readable_name.toLowerCase().replace(/ /g, '_'),
+                                         // }}}
+                                         
+                                         // camelcased_name {{{
+                                         camelcased_name: property.readable_name.replace(/ /g, ''),
+                                         // }}}
+                                         
+                                         // lower_camelcased_pluralized_name {{{
+                                         lower_camelcased_name: function () {
+                                             var s = property.readable_name.replace(/ /g, '');
+
+                                             return s.charAt(0).toLowerCase() + s.substr(1);
+                                         }
+                                         // }}}
+
                                         }
                                     );
                             // }}}
@@ -350,13 +377,7 @@
                                         var property = extended_properties[i];
 
                                         if (typeof property.show_on_admin_frontend_section_table !== 'undefined' && property.show_on_admin_frontend_section_table === true) {
-                                            iterator.push(
-                                                theosp.object.extend({}, property, 
-                                                    {capitalized_name: 
-                                                        property.name.charAt(0).toLowerCase() + property.name.substr(1)
-                                                    }
-                                                )
-                                            );
+                                            iterator.push(property);
                                         }
                                     }
 
@@ -395,6 +416,7 @@
                         }
                         // }}}
 
+                        // generate tasks {{{
                         var read_stream = fs.createReadStream('./api-generator-templates/' + api.type + '/tasks.txt', {encoding: 'utf8'}),
                             tasks = '';
 
@@ -405,6 +427,8 @@
                             .on('end', function () {
                                 console.log(populateTemplate(tasks, templates_components));
                             });
+                        // }}}
+
                     })(api);
                 }
             }

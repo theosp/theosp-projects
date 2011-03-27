@@ -57,7 +57,7 @@ RERUIRES: Node.js's EventEmitter
 
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.model = {
         {% @properties %}
-        {{ item.name }}: {{ item.admin_editor_default_value }}{% !last %},{% /!last %}
+        {{ item.underscored_name }}: {{ item.admin_editor_default_value }}{% !last %},{% /!last %}
         {% /@properties %}
     };
     // }}}
@@ -91,7 +91,7 @@ RERUIRES: Node.js's EventEmitter
         if (self.key !== null) {
             $.{{ underscored_entity_name }}_api.get(self.key, function ({{ underscored_entity_name }}) {
                 {% @properties %}
-                self.model.{{ item.name }} = {{ underscored_entity_name }}.{{ item.name }};
+                self.model.{{ item.underscored_name }} = {{ underscored_entity_name }}.{{ item.underscored_name }};
                 {% /@properties %}
 
                 self.initDom();
@@ -127,17 +127,17 @@ RERUIRES: Node.js's EventEmitter
                                     {% @properties %}
                                     {% ?item.admin_editor_dom_element_input %}
                                     '<tr>' +
-                                        '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
+                                        '<td><label for="|prefix|{{ item.underscored_name }}">{{ item.readable_capitalized_name }}</label></td>' +
                                         '<td>' +
-                                            '<input id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}" type="text" value="|{{ item.name }}|" />' +
+                                            '<input id="|prefix|{{ item.underscored_name }}" class="{{ item.admin_editor_css_class }}" type="text" value="|{{ item.underscored_name }}|" />' +
                                         '</td>' +
                                     '</tr>' +
                                     {% /?item.admin_editor_dom_element_input %}
                                     {% ?item.admin_editor_dom_element_textarea %}
                                     '<tr>' +
-                                        '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
+                                        '<td><label for="|prefix|{{ item.underscored_name }}">{{ item.readable_capitalized_name }}</label></td>' +
                                         '<td>' +
-                                            '<textarea id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}">|{{ item.name }}|</textarea>' +
+                                            '<textarea id="|prefix|{{ item.underscored_name }}" class="{{ item.admin_editor_css_class }}">|{{ item.underscored_name }}|</textarea>' +
                                         '</td>' +
                                     '</tr>' +
                                     {% /?item.admin_editor_dom_element_textarea %}
@@ -152,7 +152,7 @@ RERUIRES: Node.js's EventEmitter
                 ), {prefix: self.options.css_prefix,
 
                     {% @properties %}
-                    {{ item.name }}: self.model.{{ item.name }},
+                    {{ item.underscored_name }}: self.model.{{ item.underscored_name }},
                     {% /@properties %}
 
                     submit_value: self.key ? "Save" : "Add new {{ readable_noncapitalized_entity_name }}"
@@ -177,7 +177,7 @@ RERUIRES: Node.js's EventEmitter
         var self = this;
 
         {% @properties %}
-        self.model.{{ item.name }} = self.$('#|prefix|{{ item.name }}').val();
+        self.model.{{ item.underscored_name }} = self.$('#|prefix|{{ item.underscored_name }}').val();
         {% /@properties %}
 
         var action_url;
@@ -195,7 +195,7 @@ RERUIRES: Node.js's EventEmitter
             data: {
                 query: JSON.stringify({
                     {% @properties %}
-                    {{ item.name }}: self.model.{{ item.name }}{% !last %},{% /!last %}
+                    {{ item.underscored_name }}: self.model.{{ item.underscored_name }}{% !last %},{% /!last %}
                     {% /@properties %}
                 })
             },
