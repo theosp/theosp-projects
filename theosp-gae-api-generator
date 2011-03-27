@@ -351,13 +351,7 @@
                                         var property = extended_properties[i];
 
                                         if (typeof property.show_on_admin_frontend_section_table !== 'undefined' && property.show_on_admin_frontend_section_table === true) {
-                                            iterator.push(
-                                                theosp.object.extend({}, property, 
-                                                    {capitalized_name: 
-                                                        property.name.charAt(0).toLowerCase() + property.name.substr(1)
-                                                    }
-                                                )
-                                            );
+                                            iterator.push(property);
                                         }
                                     }
 
