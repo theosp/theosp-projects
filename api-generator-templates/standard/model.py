@@ -5,7 +5,7 @@ from google.appengine.ext import db
 class {{ camelcased_entity_name }}(db.Expando):
     # Attributes {{{
     {% @properties %}
-    {{ item.name }} = {{ item.model_definition }}
+    {{ item.underscored_name }} = {{ item.model_definition }}
     {% /@properties %}
     # }}}
 

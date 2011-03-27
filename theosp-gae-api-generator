@@ -183,12 +183,38 @@
                             // initiate extended_property {{{
                             var extended_property = 
                                     theosp.object.extend({}, property, 
-                                        {capitalized_name: 
-                                            property.name.charAt(0).toUpperCase() + property.name.substr(1),
+                                        {
+                                         // admin_editor_css_class {{{
                                          admin_editor_css_class:
                                             (typeof property.admin_editor_css_class !== "undefined") ?
                                                 property.admin_editor_css_class :
-                                                default_admin_editor_css_class
+                                                default_admin_editor_css_class,
+                                         // }}}
+
+                                         // readable_capitalized_name {{{
+                                         readable_capitalized_name: property.readable_name,
+                                         // }}}
+                                         
+                                         // readable_noncapitalized_name {{{
+                                         readable_noncapitalized_name: property.readable_name.toLowerCase(),
+                                         // }}}
+                                         
+                                         // underscored_name {{{
+                                         underscored_name: property.readable_name.toLowerCase().replace(/ /g, '_'),
+                                         // }}}
+                                         
+                                         // camelcased_name {{{
+                                         camelcased_name: property.readable_name.replace(/ /g, ''),
+                                         // }}}
+                                         
+                                         // lower_camelcased_pluralized_name {{{
+                                         lower_camelcased_name: function () {
+                                             var s = property.readable_name.replace(/ /g, '');
+
+                                             return s.charAt(0).toLowerCase() + s.substr(1);
+                                         }
+                                         // }}}
+
                                         }
                                     );
                             // }}}
