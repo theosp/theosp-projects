@@ -76,6 +76,7 @@ class All(webapp.RequestHandler):
         page = self.request.GET.get('page') or 1
         order_by = self.request.GET.get('order_by') or '-date_modified'
 
+        page_size = int(page_size)
         page = int(page)
 
         {{ underscored_pluralized_entity_name }}_query = {{ camelcased_entity_name }}.all().order(order_by)
@@ -123,8 +124,15 @@ class Create(webapp.RequestHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
 
-        {{ underscored_entity_name }}.created_by = users.User()
-        {{ underscored_entity_name }}.modified_by = users.User()
+        try:
+            {{ underscored_entity_name }}.created_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.created_by = None
+
+        try:
+            {{ underscored_entity_name }}.modified_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.modified_by = None
 
         {{ underscored_entity_name }}.put()
 
@@ -151,7 +159,10 @@ class Save(webapp.RequestHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
 
-        {{ underscored_entity_name }}.modified_by = users.User()
+        try:
+            {{ underscored_entity_name }}.modified_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.modified_by = None
 
         {{ underscored_entity_name }}.put()
 

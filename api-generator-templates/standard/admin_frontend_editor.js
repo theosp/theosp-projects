@@ -56,7 +56,9 @@ RERUIRES: Node.js's EventEmitter
     };
 
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.model = {
-        name: ''
+        {% @properties %}
+        {{ item.name }}: {{ item.admin_editor_default_value }}{% !last %},{% /!last %}
+        {% /@properties %}
     };
     // }}}
 
@@ -88,7 +90,9 @@ RERUIRES: Node.js's EventEmitter
 
         if (self.key !== null) {
             $.{{ underscored_entity_name }}_api.get(self.key, function ({{ underscored_entity_name }}) {
-                self.model.name = {{ underscored_entity_name }}.name;
+                {% @properties %}
+                self.model.{{ item.name }} = {{ underscored_entity_name }}.{{ item.name }};
+                {% /@properties %}
 
                 self.initDom();
             });
@@ -120,12 +124,24 @@ RERUIRES: Node.js's EventEmitter
                                             '" />' +
                                         '</td>' +
                                     '</tr>' +
+                                    {% @properties %}
+                                    {% ?item.admin_editor_dom_element_input %}
                                     '<tr>' +
-                                        '<td><label for="|prefix|{{ underscored_entity_name }}_name">Name</label></td>' +
+                                        '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
                                         '<td>' +
-                                            '<input id="|prefix|{{ underscored_entity_name }}_name" class="name" type="text" value="|name|" maxlength="500" />' +
+                                            '<input id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}" type="text" value="|{{ item.name }}|" />' +
                                         '</td>' +
                                     '</tr>' +
+                                    {% /?item.admin_editor_dom_element_input %}
+                                    {% ?item.admin_editor_dom_element_textarea %}
+                                    '<tr>' +
+                                        '<td><label for="|prefix|{{ item.name }}">{{ item.capitalized_name }}</label></td>' +
+                                        '<td>' +
+                                            '<textarea id="|prefix|{{ item.name }}" class="{{ item.admin_editor_css_class }}">|{{ item.name }}|</textarea>' +
+                                        '</td>' +
+                                    '</tr>' +
+                                    {% /?item.admin_editor_dom_element_textarea %}
+                                    {% /@properties %}
                                 '</tbody>' +
                             '</table>' +
                             '<input type="submit" value="|submit_value|" id="|prefix|submit_button" /> ' +
@@ -134,7 +150,11 @@ RERUIRES: Node.js's EventEmitter
                      '</div>' +
                  '</div>'
                 ), {prefix: self.options.css_prefix,
-                    name: self.model.name,
+
+                    {% @properties %}
+                    {{ item.name }}: self.model.{{ item.name }},
+                    {% /@properties %}
+
                     submit_value: self.key ? "Save" : "Add new {{ readable_noncapitalized_entity_name }}"
                 }
             )
@@ -156,7 +176,9 @@ RERUIRES: Node.js's EventEmitter
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.save = function (callback) {
         var self = this;
 
-        self.model.name = self.$('#|prefix|{{ underscored_entity_name }}_name').val();
+        {% @properties %}
+        self.model.{{ item.name }} = self.$('#|prefix|{{ item.name }}').val();
+        {% /@properties %}
 
         var action_url;
 
@@ -172,7 +194,9 @@ RERUIRES: Node.js's EventEmitter
             url: action_url,
             data: {
                 query: JSON.stringify({
-                    name: self.model.name
+                    {% @properties %}
+                    {{ item.name }}: self.model.{{ item.name }}{% !last %},{% /!last %}
+                    {% /@properties %}
                 })
             },
             success: function (response) { 

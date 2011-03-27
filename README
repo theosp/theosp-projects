@@ -1,0 +1,96 @@
+Theosp Projects
+===============
+
+project.conf structure
+----------------------
+
+project_path
+    (string) The **full path** to the local project repository.
+
+domain
+    (string) The project domain (only domain, without protocol or slashes).
+
+readable_name
+    (String) The human-readable project name.
+
+github_rep
+    (string) The username/rep for the remote github repository of this project.
+
+gae_app_name
+    (string) The project's Google App Engine application name
+
+apis
+    (object) Holds objects defining the different project apis. The key can be
+    used later to refer to the api by the theosp-gae-api-generator. 
+    
+api object structure
+--------------------
+
+entity_name
+    (string) The camel cased human readable entity name.
+
+pluralized_entity_name
+    (string) The camel cased pluralized human readable entity name.
+
+type
+    (string; default="standard") The api type: standard/file_system.
+
+images_preview
+    (bool; default=true) Has effect only when type is file_system.
+
+mime_types_restriced
+    (bool; default=false) Has effect only when type is file_system.
+
+allowed_mime_types
+    (bool; default=[]) Has effect only when type is file_system, and
+    mime_types_restriced is true.
+
+admin_section_show_created_by_column
+    (bool; default=true)
+
+admin_section_show_modified_by_column
+    (bool; default=true)
+
+allow_guests_to_get_entity
+    (bool; default=false)
+
+allow_guests_to_list_entities
+    (bool; default=false)
+
+allow_guests_to_create_entities
+    (bool; default=false)
+
+allow_guests_to_edit_entities
+    (bool; default=false)
+
+properties
+    (array; default=[]) Currently has effect only when type is standard.
+
+property object
+---------------
+
+name
+    (string) the all lower-cased property name.
+
+readable_name
+    (string) the human readable camel cased readable property name.
+
+model_definition
+    (string) example: 'db.TextProperty(default="")'
+
+show_on_admin_frontend_section_table
+    (bool)
+
+admin_editor_dom_element
+    (string; default="input") possible values: input, textarea
+
+admin_editor_css_class
+    (string; default="")
+
+    possible valuses for input: key, name, small_number, link, datepicker,
+    color, small_text, medium_text, text
+
+    possible valuses for textarea: html, description
+
+admin_editor_default_value
+    (string)

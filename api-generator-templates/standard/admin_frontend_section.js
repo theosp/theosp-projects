@@ -67,9 +67,15 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                         '<table class="|prefix|{{ underscored_pluralized_entity_name }}_table">' +
                             '<thead>' +
                                 '<tr>' +
-                                    '<th class="|prefix|order_bys" id="|prefix|order_by_name">Name</th>' +
+                                    {% @admin_frontend_section_table_properties %}
+                                    '<th class="|prefix|order_bys" id="|prefix|order_by_{{ item.name }}">{{ item.capitalized_name }}</th>' +
+                                    {% /@admin_frontend_section_table_properties %}
+                                    {% ?admin_section_show_created_by_column %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_created_by">Created By</th>' +
+                                    {% /?admin_section_show_created_by_column %}
+                                    {% ?admin_section_show_modified_by_column %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_modified_by">Modified By</th>' +
+                                    {% /?admin_section_show_modified_by_column %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_date_created">Created</th>' +
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_date_modified">Modified</th>' +
                                 '</tr>' +
@@ -77,8 +83,8 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                             '<tbody>' +
                             '</tbody>' +
                             '<tfoot>' +
-                                '<tr><td id="|prefix|status_bar" colspan="5">Click on a row to get its key</td></tr>' +
-                                '<tr><td colspan="6">' +
+                                '<tr><td id="|prefix|status_bar" colspan="{{ admin_section_table_cols_count }}">Click on a row to get its key</td></tr>' +
+                                '<tr><td colspan="{{ admin_section_table_cols_count }}">' +
                                     '<div id="|prefix|pager"></div>' +
                                     '<a id="|prefix|add_{{ underscored_entity_name }}" href="javascript:void(0);">Add New {{ readable_capitalized_entity_name }}</a>' +
                                 '</td></tr>' +
@@ -143,19 +149,33 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                         theosp.string.supplant(
                             (
                                 '<tr class="|prefix|{{ underscored_pluralized_entity_name }}_row" id="|prefix|entity_row_|{{ underscored_entity_name }}_id|">' +
-                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_name">|{{ underscored_entity_name }}_name|</td>' + 
+                                    {% @admin_frontend_section_table_properties %}
+                                    '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_{{ item.name }}">|{{ item.name }}|</td>' + 
+                                    {% /@admin_frontend_section_table_properties %}
+                                    {% ?admin_section_show_created_by_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_created_by">|created_by|</td>' + 
+                                    {% /?admin_section_show_created_by_column %}
+                                    {% ?admin_section_show_modified_by_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_modified_by">|modified_by|</td>' + 
+                                    {% /?admin_section_show_modified_by_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_created">|created|</td>' + 
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_modified">|modified|</td>' + 
                                 '</tr>'
                             ), {prefix: self.options.css_prefix,
-                                created_by: {{ underscored_entity_name }}.created_by._User__email,
-                                modified_by: {{ underscored_entity_name }}.modified_by._User__email,
-                                created: {{ underscored_entity_name }}.date_created.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_created.format('isoTime'),
-                                modified: {{ underscored_entity_name }}.date_modified.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_modified.format('isoTime'),
+
                                 {{ underscored_entity_name }}_id: {{ underscored_entity_name }}_id,
-                                {{ underscored_entity_name }}_name: {{ underscored_entity_name }}.name
+
+                                {% @admin_frontend_section_table_properties %}
+                                {{ item.name }}: {{ underscored_entity_name }}.{{ item.name }},
+                                {% /@admin_frontend_section_table_properties %}
+                                {% ?admin_section_show_created_by_column %}
+                                created_by: {{ underscored_entity_name }}.created_by._User__email,
+                                {% /?admin_section_show_created_by_column %}
+                                {% ?admin_section_show_modified_by_column %}
+                                modified_by: {{ underscored_entity_name }}.modified_by._User__email,
+                                {% /?admin_section_show_modified_by_column %}
+                                created: {{ underscored_entity_name }}.date_created.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_created.format('isoTime'),
+                                modified: {{ underscored_entity_name }}.date_modified.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_modified.format('isoTime')
                             }
                         )
                     );
@@ -166,10 +186,9 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
         self.$('.|prefix|{{ underscored_pluralized_entity_name }}_row')
             .die('click')
             .live('click', function () {
-                var {{ underscored_entity_name }}_key = self.get_entity_key_for_entities_table_row(this),
-                    {{ underscored_entity_name }}_name = self.$('#|prefix|entity_row_' + {{ underscored_entity_name }}_key + ' > .|prefix|{{ underscored_pluralized_entity_name }}_row_name').html();
+                var {{ underscored_entity_name }}_key = self.get_entity_key_for_entities_table_row(this);
 
-                self.$('#|prefix|status_bar').html({{ underscored_entity_name }}_name + ' {{ underscored_entity_name }} key :: ' + {{ underscored_entity_name }}_key);
+                self.$('#|prefix|status_bar').html('Item Key :: ' + {{ underscored_entity_name }}_key);
             });
 
         self.$('.|prefix|{{ underscored_pluralized_entity_name }}_row')
@@ -205,7 +224,7 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
         self.elements.{{ underscored_pluralized_entity_name }}_table.hide();
         
         // set subtitle
-        var section_title = {{ underscored_entity_name }}_key ? "Edit " + {{ underscored_entity_name }}_name : "Add new {{ underscored_entity_name }}";
+        var section_title = {{ underscored_entity_name }}_key ? "Edit" : "Add new {{ underscored_entity_name }}";
         self.set_section_title(section_title);
 
         var reload_table = false;
