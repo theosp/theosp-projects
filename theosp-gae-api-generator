@@ -173,9 +173,10 @@
                     // }}}
 
                     (function (api) {
-                        var extended_properties = [];
 
                         // api's extended_properties {{{
+                        var extended_properties = [];
+
                         for (var i = 0; i < api.properties.length; i++) {
                             var property = api.properties[i];
 
@@ -395,6 +396,7 @@
                         }
                         // }}}
 
+                        // generate tasks {{{
                         var read_stream = fs.createReadStream('./api-generator-templates/' + api.type + '/tasks.txt', {encoding: 'utf8'}),
                             tasks = '';
 
@@ -405,6 +407,8 @@
                             .on('end', function () {
                                 console.log(populateTemplate(tasks, templates_components));
                             });
+                        // }}}
+
                     })(api);
                 }
             }
