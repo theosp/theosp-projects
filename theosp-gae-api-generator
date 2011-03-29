@@ -173,6 +173,9 @@
                     // }}}
 
                     (function (api) {
+                        // init api.some_properties_need_special_treatment_after_json_decode {{{
+                        api.some_properties_need_special_treatment_after_json_decode = false;
+                        // }}}
 
                         // api's extended_properties {{{
                         var extended_properties = [];
@@ -217,6 +220,27 @@
 
                                         }
                                     );
+
+                            var exec_result_object = null;
+                            // trivial_js_conversion_tofrom_string, is_list {{{
+                            if ((exec_result_object = /^db.ListProperty\(([^)]+)\)/.exec(extended_property.model_definition)) !== null) {
+                                extended_property.is_list = true;
+                                extended_property.python_items_types = exec_result_object[1];
+
+                                extended_property.trivial_js_conversion_tofrom_string = false;
+
+                                extended_property.trivial_conversion_of_list_items_types_python = false;
+
+                                api.some_properties_need_special_treatment_after_json_decode = true;
+                            } else {
+                                extended_property.is_list = false;
+
+                                extended_property.trivial_js_conversion_tofrom_string = true;
+
+                                extended_property.trivial_conversion_of_list_items_types_python = true;
+                            }
+                            // }}}
+
                             // }}}
 
                             // set admin_editor_dom_element to its default if undefined or has invalid value {{{
@@ -353,9 +377,12 @@
                                 // }}}
 
                                 // allow_guests_to_edit_entities {{{
-                                allow_guests_to_edit_entities: api.allow_guests_to_edit_entities
+                                allow_guests_to_edit_entities: api.allow_guests_to_edit_entities,
                                 // }}}
 
+                                // some_properties_need_special_treatment_after_json_decode {{{
+                                some_properties_need_special_treatment_after_json_decode: api.some_properties_need_special_treatment_after_json_decode
+                                // }}}
                             },
                             // }}}
 
