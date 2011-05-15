@@ -1,3 +1,7 @@
+2011.05.15, Version 1.0.0alpha1
+
+* Upgrade theosp_common_js. closes #6
+
 2011.05.15, Version 1.0.0
 
 * The semver standard adopted. closes #7
