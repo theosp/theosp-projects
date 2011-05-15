@@ -144,7 +144,7 @@ MAKE_PATH_DIR = \
 INSERT_PROD_FILES_HEADER = \
     cat production_files_headers.txt "$1" | sed -e "s/|VERSION|/$$(git describe)/" | sed -e "s/|DATE|/$$(date +"%F %H:%M")/" >> "$2";\
 \
-	if [[ $3 ]]; then\
+	if $3; then\
 		rm -f "$1";\
 	fi
 
