@@ -1,3 +1,7 @@
+2011.05.16, Version 1.0.0alpha2
+
+* Update submodule theosp_common_js to v0.0.1. closes #8
+
 2011.05.15, Version 1.0.0alpha1
 
 * Upgrade theosp_common_js. closes #6
