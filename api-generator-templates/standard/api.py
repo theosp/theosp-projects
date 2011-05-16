@@ -1,14 +1,7 @@
 #!/usr/bin/env python
 
-###########################################################
-# Solve bug: http://groups.google.com/group/google-appengine-python/browse_thread/thread/e3a9d8b8be36870d/5dc96ab56b889dc6?pli=1
-# Remove the standard version of Django and put version 1.1
-import os
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-from appengine_django import InstallAppengineHelperForDjango
-InstallAppengineHelperForDjango(version='1.1')
-###########################################################
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 
 # imports {{{
 from google.appengine.ext import webapp, db
@@ -104,9 +97,20 @@ class Get(webapp.RequestHandler):
             self.response.set_status(status)
             return self.response.out.write(json.dumps(object, cls=JsonEncoder))
         else:
-            {{ underscored_entity_name }} = object # just to improve readability
+            {{ underscored_entity_name }}_object = object # just to improve readability
 
-        return self.response.out.write(json.dumps({{ underscored_entity_name }}, cls=JsonEncoder))
+        response_obejct = {}
+        for field in {{ underscored_entity_name }}_object.fields():
+            response_obejct[field] = getattr({{ underscored_entity_name }}_object, field)
+
+        {% @properties %}
+        {% !item.trivial_conversion_of_list_items_types_python %}
+        response_obejct["{{ item.underscored_name }}"] =\
+                [str(item) for item in response_obejct["{{ item.underscored_name }}"]]
+        {% /!item.trivial_conversion_of_list_items_types_python %}
+        {% /@properties %}
+
+        return self.response.out.write(json.dumps(response_obejct, cls=JsonEncoder))
 # }}}
 
 # Create {{{
@@ -121,8 +125,22 @@ class Create(webapp.RequestHandler):
 
         fields = {{ underscored_entity_name }}.fields()
         for key in query:
+            {% !some_properties_need_special_treatment_after_json_decode %}
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
+            {% /!some_properties_need_special_treatment_after_json_decode %}
+            {% ?some_properties_need_special_treatment_after_json_decode %}
+            if key in fields:
+                {% @properties %}
+                {% !item.trivial_conversion_of_list_items_types_python %}
+                if key == "{{ item.underscored_name }}":
+                    {{ underscored_entity_name }}.{{ item.underscored_name }} = \
+                            [db.Key(item) for item in query["{{ item.underscored_name }}"]]
+                else:
+                    setattr({{ underscored_entity_name }}, key, query[key])
+                {% /!item.trivial_conversion_of_list_items_types_python %}
+                {% /@properties %}
+            {% /?some_properties_need_special_treatment_after_json_decode %}
 
         try:
             {{ underscored_entity_name }}.created_by = users.User()
@@ -156,8 +174,22 @@ class Save(webapp.RequestHandler):
 
         fields = {{ underscored_entity_name }}.fields()
         for key in query:
+            {% !some_properties_need_special_treatment_after_json_decode %}
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, query[key])
+            {% /!some_properties_need_special_treatment_after_json_decode %}
+            {% ?some_properties_need_special_treatment_after_json_decode %}
+            if key in fields:
+                {% @properties %}
+                {% !item.trivial_conversion_of_list_items_types_python %}
+                if key == "{{ item.underscored_name }}":
+                    {{ underscored_entity_name }}.{{ item.underscored_name }} = \
+                            [db.Key(item) for item in query["{{ item.underscored_name }}"]]
+                else:
+                    setattr({{ underscored_entity_name }}, key, query[key])
+                {% /!item.trivial_conversion_of_list_items_types_python %}
+                {% /@properties %}
+            {% /?some_properties_need_special_treatment_after_json_decode %}
 
         try:
             {{ underscored_entity_name }}.modified_by = users.User()

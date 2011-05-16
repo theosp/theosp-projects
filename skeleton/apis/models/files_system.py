@@ -1,23 +1,14 @@
 #!/usr/bin/env python
 
+from apis.models import {{ project_underscored_name }}_data_models
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
 from google.appengine.ext import blobstore
 
-class FilesSystem(polymodel.PolyModel):
+class FilesSystem({{ project_underscored_name }}_data_models.{{ project_camel_cased_name }}PolyModel):
     # Attributes {{{
     permalink = db.StringProperty(default="new_file.txt")
     blobinfo = blobstore.BlobReferenceProperty()
-    # }}}
-
-    # Modifications date tracking {{{
-    date_created = db.DateTimeProperty(auto_now_add=True)
-    date_modified = db.DateTimeProperty(auto_now=True)
-    # }}}
-
-    # Created/modified by {{{
-    created_by = db.UserProperty()
-    modified_by = db.UserProperty()
     # }}}
 
 # vim:fdm=marker:fmr={{{,}}}:

@@ -52,6 +52,8 @@
                 'apis/models/__init__.py',
             './skeleton/apis/models/files_system.py':
                 'apis/models/files_system.py',
+            './skeleton/apis/models/project_models.py':
+                'apis/models/{{ project_underscored_name }}_models.py',
             './skeleton/apis/templates/error.html':
                 'apis/templates/error.html',
             './skeleton/apis/templates/login.html':
@@ -333,6 +335,8 @@
                 // Tags {{{
                 tags: {
                     project_readable_name: project.readable_name,
+                    project_camel_cased_name: theosp.string.readableToCamelCased(project.readable_name),
+                    project_underscored_name: theosp.string.readableToUnderscored(project.readable_name),
                     gae_app_name: project.gae_app_name
                 },
                 // }}}
