@@ -69,6 +69,12 @@
         default_mime_types_restriced = false;
         // }}}
     
+        // api_properties_defaults {{{
+        api_properties_defaults = {
+            show_on_admin_editor: true
+        };
+        // }}}
+
     // }}}
 
     // actions {{{
@@ -177,6 +183,17 @@
                         api.some_properties_need_special_treatment_after_json_decode = false;
                         // }}}
 
+                        // set default values to properties properties {{{
+                        if (typeof api.properties !== 'undefined') {
+                            for (var i = 0; i < api.properties.length; i++) {
+                                var property = api.properties[i];
+
+                                api.properties[i] =
+                                    theosp.object.extend({}, api_properties_defaults, property);
+                            }
+                        }
+                        // }}}
+
                         // api's extended_properties {{{
                         var extended_properties = [];
 
@@ -264,6 +281,19 @@
                             }
                         }
                         // }}}
+
+                        // editor_properties {{{
+                        var editor_properties = [];
+
+                        for (var i = 0; i < extended_properties.length; i++) {
+                            var property = extended_properties[i];
+                        
+                            if (property.show_on_admin_editor === true) {
+                                editor_properties.push(property);
+                            }
+                        }
+                        // }}}
+                        
 
                         // generate api's templates components {{{
                         var templates_components = {
@@ -407,7 +437,11 @@
                                 // properties {{{
                                 properties: extended_properties,
                                 // }}}
-                                
+
+                                // editor_properties {{{
+                                editor_properties: editor_properties,
+                                // }}}
+
                                 // admin_frontend_section_table_properties {{{
                                 admin_frontend_section_table_properties: (function () {
                                     var iterator = [];

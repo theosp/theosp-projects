@@ -56,9 +56,9 @@ RERUIRES: Node.js's EventEmitter
     };
 
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.model = {
-        {% @properties %}
+        {% @editor_properties %}
         {{ item.underscored_name }}: {{ item.admin_editor_default_value }}{% !last %},{% /!last %}
-        {% /@properties %}
+        {% /@editor_properties %}
     };
     // }}}
 
@@ -90,9 +90,9 @@ RERUIRES: Node.js's EventEmitter
 
         if (self.key !== null) {
             $.{{ underscored_entity_name }}_api.get(self.key, function ({{ underscored_entity_name }}) {
-                {% @properties %}
+                {% @editor_properties %}
                 self.model.{{ item.underscored_name }} = {{ underscored_entity_name }}.{{ item.underscored_name }};
-                {% /@properties %}
+                {% /@editor_properties %}
 
                 self.initDom();
             });
@@ -124,7 +124,7 @@ RERUIRES: Node.js's EventEmitter
                                             '" />' +
                                         '</td>' +
                                     '</tr>' +
-                                    {% @properties %}
+                                    {% @editor_properties %}
                                     {% ?item.admin_editor_dom_element_input %}
                                     '<tr>' +
                                         '<td><label for="|prefix|{{ item.underscored_name }}">{{ item.readable_capitalized_name }}</label></td>' +
@@ -141,7 +141,7 @@ RERUIRES: Node.js's EventEmitter
                                         '</td>' +
                                     '</tr>' +
                                     {% /?item.admin_editor_dom_element_textarea %}
-                                    {% /@properties %}
+                                    {% /@editor_properties %}
                                 '</tbody>' +
                             '</table>' +
                             '<input type="submit" value="|submit_value|" id="|prefix|submit_button" /> ' +
@@ -151,14 +151,14 @@ RERUIRES: Node.js's EventEmitter
                  '</div>'
                 ), {prefix: self.options.css_prefix,
 
-                    {% @properties %}
+                    {% @editor_properties %}
                     {% ?item.trivial_js_conversion_tofrom_string %}
                     {{ item.underscored_name }}: self.model.{{ item.underscored_name }},
                     {% /?item.trivial_js_conversion_tofrom_string %}
                     {% ?item.is_list %}
                     {{ item.underscored_name }}: self.model.{{ item.underscored_name }}.join(", "),
                     {% /?item.is_list %}
-                    {% /@properties %}
+                    {% /@editor_properties %}
 
                     submit_value: self.key ? "Save" : "Add new {{ readable_noncapitalized_entity_name }}"
                 }
@@ -181,14 +181,14 @@ RERUIRES: Node.js's EventEmitter
     $.{{ camelcased_pluralized_entity_name }}Editor.prototype.save = function (callback) {
         var self = this;
 
-        {% @properties %}
+        {% @editor_properties %}
         {% ?item.trivial_js_conversion_tofrom_string %}
         self.model.{{ item.underscored_name }} = self.$('#|prefix|{{ item.underscored_name }}').val();
         {% /?item.trivial_js_conversion_tofrom_string %}
         {% ?item.is_list %}
         self.model.{{ item.underscored_name }} = theosp.string.split(self.$('#|prefix|{{ item.underscored_name }}').val());
         {% /?item.is_list %}
-        {% /@properties %}
+        {% /@editor_properties %}
 
         var action_url;
 
@@ -204,9 +204,9 @@ RERUIRES: Node.js's EventEmitter
             url: action_url,
             data: {
                 query: JSON.stringify({
-                    {% @properties %}
+                    {% @editor_properties %}
                     {{ item.underscored_name }}: self.model.{{ item.underscored_name }}{% !last %},{% /!last %}
-                    {% /@properties %}
+                    {% /@editor_properties %}
                 })
             },
             success: function (response) { 
