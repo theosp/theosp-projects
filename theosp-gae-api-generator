@@ -180,60 +180,61 @@
                         // api's extended_properties {{{
                         var extended_properties = [];
 
-                        for (var i = 0; i < api.properties.length; i++) {
-                            var property = api.properties[i];
+                        if (typeof api.properties !== 'undefined') {
+                            for (var i = 0; i < api.properties.length; i++) {
+                                var property = api.properties[i];
 
-                            // initiate extended_property {{{
-                            var extended_property = 
-                                    theosp.object.extend({}, property, 
-                                        {
-                                         // admin_editor_css_class {{{
-                                         admin_editor_css_class:
-                                            (typeof property.admin_editor_css_class !== "undefined") ?
-                                                property.admin_editor_css_class :
-                                                default_admin_editor_css_class,
-                                         // }}}
+                                // initiate extended_property {{{
+                                var extended_property = 
+                                        theosp.object.extend({}, property, 
+                                            {
+                                             // admin_editor_css_class {{{
+                                             admin_editor_css_class:
+                                                (typeof property.admin_editor_css_class !== "undefined") ?
+                                                    property.admin_editor_css_class :
+                                                    default_admin_editor_css_class,
+                                             // }}}
 
-                                         // readable_capitalized_name {{{
-                                         readable_capitalized_name: property.readable_name,
-                                         // }}}
-                                         
-                                         // readable_noncapitalized_name {{{
-                                         readable_noncapitalized_name: property.readable_name.toLowerCase(),
-                                         // }}}
-                                         
-                                         // underscored_name {{{
-                                         underscored_name: property.readable_name.toLowerCase().replace(/ /g, '_'),
-                                         // }}}
-                                         
-                                         // camelcased_name {{{
-                                         camelcased_name: property.readable_name.replace(/ /g, ''),
-                                         // }}}
-                                         
-                                         // lower_camelcased_pluralized_name {{{
-                                         lower_camelcased_name: function () {
-                                             var s = property.readable_name.replace(/ /g, '');
+                                             // readable_capitalized_name {{{
+                                             readable_capitalized_name: property.readable_name,
+                                             // }}}
+                                             
+                                             // readable_noncapitalized_name {{{
+                                             readable_noncapitalized_name: property.readable_name.toLowerCase(),
+                                             // }}}
+                                             
+                                             // underscored_name {{{
+                                             underscored_name: property.readable_name.toLowerCase().replace(/ /g, '_'),
+                                             // }}}
+                                             
+                                             // camelcased_name {{{
+                                             camelcased_name: property.readable_name.replace(/ /g, ''),
+                                             // }}}
+                                             
+                                             // lower_camelcased_pluralized_name {{{
+                                             lower_camelcased_name: function () {
+                                                 var s = property.readable_name.replace(/ /g, '');
 
-                                             return s.charAt(0).toLowerCase() + s.substr(1);
-                                         }
-                                         // }}}
+                                                 return s.charAt(0).toLowerCase() + s.substr(1);
+                                             }
+                                             // }}}
 
-                                        }
-                                    );
-
-                            var exec_result_object = null;
-                            // trivial_js_conversion_tofrom_string, is_list {{{
-                            if ((exec_result_object = /^db.ListProperty\(([^)]+)\)/.exec(extended_property.model_definition)) !== null) {
-                                extended_property.is_list = true;
-                                extended_property.python_items_types = exec_result_object[1];
-
-                                extended_property.trivial_js_conversion_tofrom_string = false;
-
-                                extended_property.trivial_conversion_of_list_items_types_python = false;
-
-                                api.some_properties_need_special_treatment_after_json_decode = true;
-                            } else {
-                                extended_property.is_list = false;
+                                            }
+                                        );
+                                var exec_result_object = null;
+                                // trivial_js_conversion_tofrom_string, is_list {{{
+                                if ((exec_result_object = /^db.ListProperty\(([^)]+)\)/.exec(extended_property.model_definition)) !== null) {
+                                    extended_property.is_list = true;
+                                    extended_property.python_items_types = exec_result_object[1];
+                                    extended_property.trivial_js_conversion_tofrom_string = false;
+                                    extended_property.trivial_conversion_of_list_items_types_python = false;
+                                    api.some_properties_need_special_treatment_after_json_decode = true;
+                                } else {
+                                    extended_property.is_list = false;
+                                    extended_property.trivial_js_conversion_tofrom_string = true;
+                                    extended_property.trivial_conversion_of_list_items_types_python = true;
+                                }
+                                // }}}
 
                                 extended_property.trivial_js_conversion_tofrom_string = true;
 
@@ -241,27 +242,28 @@
                             }
                             // }}}
 
-                            // }}}
+                                // }}}
 
-                            // set admin_editor_dom_element to its default if undefined or has invalid value {{{
-                            if (typeof extended_property.admin_editor_dom_element === 'undefined' || !(extended_property.admin_editor_dom_element in valid_admin_editor_dom_element)) {
-                                extended_property.admin_editor_dom_element = default_admin_editor_dom_element;
-                            }
-                            // }}}
-
-                            // add properties that enables checking for the admin_editor_dom_element state from within the template {{{
-
-                            // first set all to false
-                            for (var dom_element in valid_admin_editor_dom_element) {
-                                if (valid_admin_editor_dom_element.hasOwnProperty(dom_element)) {
-                                    extended_property['admin_editor_dom_element_' + dom_element] = false;
+                                // set admin_editor_dom_element to its default if undefined or has invalid value {{{
+                                if (typeof extended_property.admin_editor_dom_element === 'undefined' || !(extended_property.admin_editor_dom_element in valid_admin_editor_dom_element)) {
+                                    extended_property.admin_editor_dom_element = default_admin_editor_dom_element;
                                 }
+                                // }}}
+
+                                // add properties that enables checking for the admin_editor_dom_element state from within the template {{{
+
+                                // first set all to false
+                                for (var dom_element in valid_admin_editor_dom_element) {
+                                    if (valid_admin_editor_dom_element.hasOwnProperty(dom_element)) {
+                                        extended_property['admin_editor_dom_element_' + dom_element] = false;
+                                    }
+                                }
+
+                                extended_property['admin_editor_dom_element_' + extended_property.admin_editor_dom_element] = true;
+                                // }}}
+
+                                extended_properties.push(extended_property);
                             }
-
-                            extended_property['admin_editor_dom_element_' + extended_property.admin_editor_dom_element] = true;
-                            // }}}
-
-                            extended_properties.push(extended_property);
                         }
                         // }}}
 
@@ -270,6 +272,18 @@
 
                             // Tags {{{
                             tags: {
+
+                                // project_readable_name {{{
+                                project_readable_name: project.readable_name,
+                                // }}}
+                                
+                                // project_camel_cased_name {{{
+                                project_camel_cased_name: theosp.string.readableToCamelCased(project.readable_name),
+                                // }}}
+                                
+                                // project_underscored_name {{{
+                                project_underscored_name: theosp.string.readableToUnderscored(project.readable_name),
+                                // }}}
 
                                 // project_domain {{{
                                 project_domain: project.domain,
