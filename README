@@ -85,6 +85,9 @@ model_definition
 show_on_admin_frontend_section_table
     (bool)
 
+show_on_admin_editor
+    (bool; default=true)
+
 admin_editor_dom_element
     (string; default="input") possible values: input, textarea
 
