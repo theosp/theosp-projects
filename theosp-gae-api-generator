@@ -194,6 +194,27 @@
                         }
                         // }}}
 
+                        // api's signature properties {{{
+                        if (typeof api.properties !== 'undefined') {
+                            for (var i = 0; i < api.properties.length; i++) {
+                                var property = api.properties[i];
+
+                                if (typeof property.maintain_signature !== 'undefined' &&
+                                    property.maintain_signature === true &&
+                                    /^db\.StringProperty/.test(property.model_definition)) {
+                                    api.properties.splice(i + 1, 0, {
+                                        readable_name: property.readable_name + " Signature",
+                                        model_definition: 'db.StringProperty(default="")',
+                                        show_on_admin_frontend_section_table: false,
+                                        show_on_admin_editor: false
+                                    });
+
+                                    i += 1; // skip the item we've just added to api.properties
+                                }
+                            }
+                        }
+                        // }}}
+
                         // api's extended_properties {{{
                         var extended_properties = [];
 

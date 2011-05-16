@@ -101,3 +101,14 @@ admin_editor_css_class
 
 admin_editor_default_value
     (string)
+
+maintain_signature
+    (bool) will effect only db.StringProperty properties.
+
+    The signature is a standard form for strings values that ease search
+    in GAE that doesn't support the like clause and don't have case insensitive
+    mode.
+
+    If maintain_signature is set to true an additional property will be added
+    for the signature value and the model API will maintain its value when creating
+    and altering an element.

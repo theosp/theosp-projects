@@ -132,14 +132,19 @@ class Create(webapp.RequestHandler):
             {% ?some_properties_need_special_treatment_after_json_decode %}
             if key in fields:
                 {% @properties %}
+                {% ?item.signature_property %}
+                if key == "{{ item.signed_property }}":
+                    {{ underscored_entity_name }}.{{ item.underscored_name }} = \
+                            [db.Key(item) for item in query["{{ item.underscored_name }}"]]
+                {% /?item.signature_property %}
                 {% !item.trivial_conversion_of_list_items_types_python %}
                 if key == "{{ item.underscored_name }}":
                     {{ underscored_entity_name }}.{{ item.underscored_name }} = \
                             [db.Key(item) for item in query["{{ item.underscored_name }}"]]
-                else:
-                    setattr({{ underscored_entity_name }}, key, query[key])
                 {% /!item.trivial_conversion_of_list_items_types_python %}
                 {% /@properties %}
+                else:
+                    setattr({{ underscored_entity_name }}, key, query[key])
             {% /?some_properties_need_special_treatment_after_json_decode %}
 
         try:
