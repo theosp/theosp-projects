@@ -152,7 +152,12 @@ RERUIRES: Node.js's EventEmitter
                 ), {prefix: self.options.css_prefix,
 
                     {% @properties %}
+                    {% ?item.trivial_js_conversion_tofrom_string %}
                     {{ item.underscored_name }}: self.model.{{ item.underscored_name }},
+                    {% /?item.trivial_js_conversion_tofrom_string %}
+                    {% ?item.is_list %}
+                    {{ item.underscored_name }}: self.model.{{ item.underscored_name }}.join(", "),
+                    {% /?item.is_list %}
                     {% /@properties %}
 
                     submit_value: self.key ? "Save" : "Add new {{ readable_noncapitalized_entity_name }}"
@@ -177,7 +182,12 @@ RERUIRES: Node.js's EventEmitter
         var self = this;
 
         {% @properties %}
+        {% ?item.trivial_js_conversion_tofrom_string %}
         self.model.{{ item.underscored_name }} = self.$('#|prefix|{{ item.underscored_name }}').val();
+        {% /?item.trivial_js_conversion_tofrom_string %}
+        {% ?item.is_list %}
+        self.model.{{ item.underscored_name }} = theosp.string.split(self.$('#|prefix|{{ item.underscored_name }}').val());
+        {% /?item.is_list %}
         {% /@properties %}
 
         var action_url;
