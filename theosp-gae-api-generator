@@ -239,8 +239,6 @@
                                 extended_property.trivial_js_conversion_tofrom_string = true;
 
                                 extended_property.trivial_conversion_of_list_items_types_python = true;
-                            }
-                            // }}}
 
                                 // }}}
 
