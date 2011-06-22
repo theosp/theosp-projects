@@ -140,6 +140,18 @@
                     }
                     // }}}
 
+                    // api.admin_section_show_created_column {{{
+                    if (typeof api.admin_section_show_created_column === 'undefined') {
+                        api.admin_section_show_created_column = default_admin_section_show_created_column;
+                    }
+                    // }}}
+
+                    // api.admin_section_show_modified_column {{{
+                    if (typeof api.admin_section_show_modified_column === 'undefined') {
+                        api.admin_section_show_modified_column = default_admin_section_show_modified_column;
+                    }
+                    // }}}
+
                     // api.allow_guests_to_get_entity {{{
                     if (typeof api.allow_guests_to_get_entity === 'undefined') {
                         api.allow_guests_to_get_entity = default_allow_guests_to_get_entity;
@@ -370,7 +382,7 @@
                                         return 6;
                                     } else if (api.type === "standard") {
                                         // Created, Modified always present
-                                        var cols = 2;
+                                        var cols = 0;
 
                                         cols += templates_components.iterators.admin_frontend_section_table_properties.length;
 
@@ -379,6 +391,14 @@
                                         }
 
                                         if (api.admin_section_show_modified_by_column === true) {
+                                            cols += 1;
+                                        }
+
+                                        if (api.admin_section_show_created_column === true) {
+                                            cols += 1;
+                                        }
+
+                                        if (api.admin_section_show_modified_column === true) {
                                             cols += 1;
                                         }
 
@@ -406,6 +426,14 @@
 
                                 // admin_section_show_modified_by_column {{{
                                 admin_section_show_modified_by_column: api.admin_section_show_modified_by_column,
+                                // }}}
+
+                                // admin_section_show_created_column {{{
+                                admin_section_show_created_column: api.admin_section_show_created_column,
+                                // }}}
+
+                                // admin_section_show_modified_column {{{
+                                admin_section_show_modified_column: api.admin_section_show_modified_column,
                                 // }}}
 
                                 // allow_guests_to_get_entity {{{

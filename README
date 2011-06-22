@@ -58,6 +58,12 @@ admin_section_show_created_by_column
 admin_section_show_modified_by_column
     (bool; default=true)
 
+admin_section_show_created_column
+    (bool; default=true)
+
+admin_section_show_modified_column
+    (bool; default=true)
+
 allow_guests_to_get_entity
     (bool; default=false)
 

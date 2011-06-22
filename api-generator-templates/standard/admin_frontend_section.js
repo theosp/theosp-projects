@@ -76,8 +76,12 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                                     {% ?admin_section_show_modified_by_column %}
                                     '<th class="|prefix|order_bys" id="|prefix|order_by_modified_by">Modified By</th>' +
                                     {% /?admin_section_show_modified_by_column %}
-                                    '<th class="|prefix|order_bys" id="|prefix|order_by_date_created">Created</th>' +
-                                    '<th class="|prefix|order_bys" id="|prefix|order_by_date_modified">Modified</th>' +
+                                    {% ?admin_section_show_created_column %}
+                                    '<th class="|prefix|order_bys" id="|prefix|order_date_created">Created</th>' +
+                                    {% /?admin_section_show_created_column %}
+                                    {% ?admin_section_show_modified_column %}
+                                    '<th class="|prefix|order_bys" id="|prefix|order_date_modified">Modified</th>' +
+                                    {% /?admin_section_show_modified_column %}
                                 '</tr>' +
                             '</thead>' +
                             '<tbody>' +
@@ -158,8 +162,12 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                                     {% ?admin_section_show_modified_by_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_modified_by">|modified_by|</td>' + 
                                     {% /?admin_section_show_modified_by_column %}
+                                    {% ?admin_section_show_created_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_created">|created|</td>' + 
+                                    {% /?admin_section_show_created_column %}
+                                    {% ?admin_section_show_modified_column %}
                                     '<td class="|prefix|{{ underscored_pluralized_entity_name }}_row_modified">|modified|</td>' + 
+                                    {% /?admin_section_show_modified_column %}
                                 '</tr>'
                             ), {prefix: self.options.css_prefix,
 
@@ -174,8 +182,12 @@ RERUIRES: Daniel Chcouri's theosp_common_js (theosp.js)
                                 {% ?admin_section_show_modified_by_column %}
                                 modified_by: {{ underscored_entity_name }}.modified_by._User__email,
                                 {% /?admin_section_show_modified_by_column %}
+                                {% ?admin_section_show_created_column %}
                                 created: {{ underscored_entity_name }}.date_created.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_created.format('isoTime'),
+                                {% /?admin_section_show_created_column %}
+                                {% ?admin_section_show_modified_column %}
                                 modified: {{ underscored_entity_name }}.date_modified.format('isoDate') + ' ' + {{ underscored_entity_name }}.date_modified.format('isoTime')
+                                {% /?admin_section_show_modified_column %}
                             }
                         )
                     );
