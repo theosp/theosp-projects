@@ -64,17 +64,17 @@ admin_section_show_created_column
 admin_section_show_modified_column
     (bool; default=true)
 
-allow_guests_to_get_entity
-    (bool; default=false)
+get_action_access_level
+    (string; default=admin)
 
-allow_guests_to_list_entities
-    (bool; default=false)
+list_action_access_level
+    (string; default=admin)
 
-allow_guests_to_create_entities
-    (bool; default=false)
+create_action_access_level
+    (string; default=admin)
 
-allow_guests_to_edit_entities
-    (bool; default=false)
+edit_action_access_level
+    (string; default=admin)
 
 properties
     (array; default=[]) Currently has effect only when type is standard.

@@ -4,20 +4,20 @@
 # list
 - url: /{{ underscored_entity_name }}/all/
   script: apis/{{ underscored_entity_name }}.py
-  {% !allow_guests_to_list_entities %}login: admin{% /!allow_guests_to_list_entities %}
+  login: {{ list_action_access_level }}
 
 # create
 - url: /{{ underscored_entity_name }}/create/
   script: apis/{{ underscored_entity_name }}.py
-  {% !allow_guests_to_create_entities %}login: admin{% /!allow_guests_to_create_entities %}
+  login: {{ create_action_access_level }}
 
 # edit
 - url: /{{ underscored_entity_name }}/([^/]*)/save/
   script: apis/{{ underscored_entity_name }}.py
-  {% !allow_guests_to_edit_entities %}login: admin{% /!allow_guests_to_edit_entities %}
+  login: {{ edit_action_access_level }}
 
 # get
 - url: /{{ underscored_entity_name }}/([^/]*)/
   script: apis/{{ underscored_entity_name }}.py
-  {% !allow_guests_to_get_entity %}login: admin{% /!allow_guests_to_get_entity %}
+  login: {{ get_action_access_level }}
 # }}}
