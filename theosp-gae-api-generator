@@ -58,6 +58,7 @@
             list_action_access_level: "admin",
             create_action_access_level: "admin",
             edit_action_access_level: "admin",
+            remove_action_access_level: "admin",
             show_images_preview: false,
             mime_types_restriced: false,
             allowed_mime_types: [],
@@ -366,7 +367,11 @@
                                 // }}}
 
                                 // edit_action_access_level {{{
-                                edit_action_access_level: api.edit_action_access_level
+                                edit_action_access_level: api.edit_action_access_level,
+                                // }}}
+
+                                // remove_action_access_level {{{
+                                remove_action_access_level: api.remove_action_access_level
                                 // }}}
                             },
                             // }}}

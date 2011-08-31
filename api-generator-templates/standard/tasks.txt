@@ -21,3 +21,9 @@
   script: apis/{{ underscored_entity_name }}.py
   login: {{ get_action_access_level }}
 # }}}
+
+# remove
+- url: /{{ underscored_entity_name }}/([^/]*)/remove/
+  script: apis/{{ underscored_entity_name }}.py
+  login: {{ remove_action_access_level }}
+# }}}
