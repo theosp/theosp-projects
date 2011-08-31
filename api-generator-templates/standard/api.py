@@ -189,7 +189,7 @@ class Save(webapp.RequestHandler):
         else:
             {{ underscored_entity_name }} = object # just to improve readability
 
-        if not registered_user.user_in_entity_group(entity):
+        if not registered_user.user_in_entity_group({{ underscored_entity_name }}):
             self.response.set_status(403)
             return self.response.out.write("Permission Denied")
 
