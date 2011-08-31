@@ -22,12 +22,6 @@
             standard: {
                 "./api-generator-templates/standard/api.py":
                     "apis/{{ underscored_entity_name }}.py",
-                "./api-generator-templates/standard/api.js":
-                    "javascript/src/apis/{{ underscored_entity_name }}.js",
-                "./api-generator-templates/standard/admin_frontend_section.js":
-                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-                "./api-generator-templates/standard/admin_frontend_editor.js":
-                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_editor.js",
                 "./api-generator-templates/standard/model.py":
                     "apis/models/{{ underscored_entity_name }}.py"
             },
