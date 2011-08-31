@@ -21,21 +21,3 @@
   script: apis/{{ underscored_entity_name }}.py
   {% !allow_guests_to_get_entity %}login: admin{% /!allow_guests_to_get_entity %}
 # }}}
-
-3. Add to the Makefile ADMIN_FRONTEND_BASE_JS_FILES var:
-    ${JS_SRC_DIR}/apis/{{ underscored_entity_name }}.js\
-    ${JS_SRC_DIR}/admin_frontend/{{ underscored_pluralized_entity_name }}_editor.js\
-    ${JS_SRC_DIR}/admin_frontend/{{ underscored_pluralized_entity_name }}_section.js\
-
-3. Add to /frontends/admin.html: 
-        <h2>Edit</h2>
-        <ul>
-            <li><a id="open-{{ underscored_pluralized_entity_name }}-editor" href="javascript:void(0);">{{ readable_capitalized_pluralized_entity_name }}</a></li>
-        </ul>
-
-    <script type="text/javascript">
-        $('#open-{{ underscored_pluralized_entity_name }}-editor').click(function () {
-            switchSection('{{ readable_capitalized_pluralized_entity_name }} Editor',
-                'admin{{ camelcased_pluralized_entity_name }}Section');
-        });
-    </script>
