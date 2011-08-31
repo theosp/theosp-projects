@@ -76,6 +76,9 @@ create_action_access_level
 edit_action_access_level
     (string; default=admin)
 
+remove_action_access_level
+    (string; default=admin)
+
 properties
     (array; default=[]) Currently has effect only when type is standard.
 
