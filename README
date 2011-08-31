@@ -42,14 +42,14 @@ pluralized_entity_name
 type
     (string; default="standard") The api type: standard/file_system.
 
-images_preview
-    (bool; default=true) Has effect only when type is file_system.
+show_images_preview
+    (bool; default=false) Has effect only when type is file_system.
 
 mime_types_restriced
     (bool; default=false) Has effect only when type is file_system.
 
 allowed_mime_types
-    (bool; default=[]) Has effect only when type is file_system, and
+    (array; default=[]) Has effect only when type is file_system, and
     mime_types_restriced is true.
 
 admin_section_show_created_by_column
