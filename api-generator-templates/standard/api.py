@@ -224,6 +224,28 @@ class Save(webapp.RequestHandler):
         return self.response.out.write(json.dumps({}, cls=JsonEncoder))
 # }}}
 
+# Remove {{{
+class Remove(webapp.RequestHandler):
+    """Remove entity
+    """
+    def post(self):
+        status, object = _get_path_{{ underscored_entity_name }}(self.request.path)
+
+        if status != 200:
+            self.response.set_status(status)
+            return self.response.out.write(json.dumps(object, cls=JsonEncoder))
+        else:
+            {{ underscored_entity_name }} = object # just to improve readability
+
+        if not registered_user.user_in_entity_group({{ underscored_entity_name }}):
+            self.response.set_status(403)
+            return self.response.out.write("Permission Denied")
+
+        {{ underscored_entity_name }}.delete()
+
+        return self.response.out.write(json.dumps({}, cls=JsonEncoder))
+# }}}
+
 # Default {{{
 class Default(webapp.RequestHandler):
     """Default serves the paths we don't have particular mapping for
@@ -240,6 +262,7 @@ application = webapp.WSGIApplication([
     ('/{{ underscored_entity_name }}/all/', All),
     ('/{{ underscored_entity_name }}/create/', Create),
     ('/{{ underscored_entity_name }}/[^/]*/save/', Save),
+    ('/{{ underscored_entity_name }}/[^/]*/remove/', Remove),
     ('/{{ underscored_entity_name }}/[^/]*/', Get),
     ('.*', Default),
 ], debug=True)
