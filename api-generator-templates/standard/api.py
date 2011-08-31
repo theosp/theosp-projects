@@ -88,7 +88,7 @@ class All(webapp.RequestHandler):
             response["{{ underscored_pluralized_entity_name }}"].append(\
                 {"key": str({{ underscored_entity_name }}.key()),\
                  {% @properties %}
-                 "{{ item.underscored_name }}": {{ underscored_entity_name }}.{{ item.model_definition }},\
+                 "{{ item.underscored_name }}": {{ underscored_entity_name }}.{{ item.underscored_name }},\
                  {% /@properties %}
                 })
 
