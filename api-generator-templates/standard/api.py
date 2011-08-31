@@ -9,9 +9,10 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from lib import simplejson as json
-from django.utils.datastructures import SortedDict
 
 from google.appengine.api import users
+
+from apis import registered_user
 
 from urlparse import urlparse
 
@@ -68,22 +69,35 @@ class All(webapp.RequestHandler):
         page_size = self.request.GET.get('page_size') or 30
         page = self.request.GET.get('page') or 1
         order_by = self.request.GET.get('order_by') or '-date_modified'
+        callback = self.request.GET.get('callback') or ""
 
         page_size = int(page_size)
         page = int(page)
 
         {{ underscored_pluralized_entity_name }}_query = {{ camelcased_entity_name }}.all().order(order_by)
+
+        registered_user.add_user_group_filter({{ underscored_pluralized_entity_name }}_query)
+
         paged_query = PagedQuery({{ underscored_pluralized_entity_name }}_query, page_size)
 
         results = paged_query.fetch_page(page)
         pages_count = paged_query.page_count()
 
-        response = {'{{ underscored_pluralized_entity_name }}': SortedDict(), 'pager': {'pages_count': pages_count}}
+        response = {'{{ underscored_pluralized_entity_name }}': [], 'pager': {'pages_count': pages_count}}
         for {{ underscored_entity_name }} in results:
-            key = str({{ underscored_entity_name }}.key())
-            response['{{ underscored_pluralized_entity_name }}'][key] = {{ underscored_entity_name }}
+            response["{{ underscored_pluralized_entity_name }}"].append(\
+                {"key": str({{ underscored_entity_name }}.key()),\
+                 {% @properties %}
+                 "{{ item.underscored_name }}": {{ underscored_entity_name }}.{{ item.model_definition }},\
+                 {% /@properties %}
+                })
 
-        return self.response.out.write(json.dumps(response, cls=JsonEncoder))
+        response = json.dumps(response, cls=JsonEncoder)
+
+        if callback != "":
+            response = callback + "(" + response + ")"
+
+        return self.response.out.write(response)
 # }}}
 
 # Get {{{
@@ -92,6 +106,10 @@ class Get(webapp.RequestHandler):
     """
     def get(self):
         status, object = _get_path_{{ underscored_entity_name }}(self.request.path)
+
+        if not registered_user.user_in_entity_group(object):
+            self.response.set_status(403)
+            return self.response.out.write("Permission Denied")
 
         if status != 200:
             self.response.set_status(status)
@@ -152,6 +170,7 @@ class Create(webapp.RequestHandler):
         except users.UserNotFoundError:
             {{ underscored_entity_name }}.modified_by = None
 
+        registered_user.apply_user_group_to_entity({{ underscored_entity_name }})
         {{ underscored_entity_name }}.put()
 
         return self.response.out.write(json.dumps({'{{ underscored_entity_name }}_key': str({{ underscored_entity_name }}.key())}, cls=JsonEncoder))
@@ -169,6 +188,10 @@ class Save(webapp.RequestHandler):
             return self.response.out.write(json.dumps(object, cls=JsonEncoder))
         else:
             {{ underscored_entity_name }} = object # just to improve readability
+
+        if not registered_user.user_in_entity_group(entity):
+            self.response.set_status(403)
+            return self.response.out.write("Permission Denied")
 
         query = json.loads(self.request.POST['query'])
 
