@@ -15,21 +15,3 @@
 - url: /{{ underscored_entity_name }}(/.*)?
   script: apis/{{ underscored_entity_name }}.py
 # }}}
-
-2. Add to the Makefile ADMIN_FRONTEND_JS_FILES var:
-    ${JS_SRC_DIR}/apis/{{ underscored_entity_name }}.js\
-    ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_uploader.js\
-    ${ADMIN_FRONTEND_JS_SRC_DIR}/{{ underscored_pluralized_entity_name }}_section.js\
-
-3. Add to /frontends/admin.html: 
-        <h2>Edit</h2>
-        <ul>
-            <li><a id="open-{{ underscored_pluralized_entity_name }}-uploader" href="javascript:void(0);">{{ readable_capitalized_pluralized_entity_name }}</a></li>
-        </ul>
-
-    <script type="text/javascript">
-        $('#open-{{ underscored_pluralized_entity_name }}-uploader').click(function () {
-            switchSection('{{ readable_capitalized_pluralized_entity_name }} Uploader',
-                'admin{{ camelcased_pluralized_entity_name }}Section');
-        });
-    </script>

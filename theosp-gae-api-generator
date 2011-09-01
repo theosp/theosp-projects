@@ -31,12 +31,6 @@
             file_system: {
                 "./api-generator-templates/file_system/api.py":
                     "apis/{{ underscored_entity_name }}.py",
-                "./api-generator-templates/file_system/api.js":
-                    "javascript/src/apis/{{ underscored_entity_name }}.js",
-                "./api-generator-templates/file_system/admin_frontend_section.js":
-                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_section.js",
-                "./api-generator-templates/file_system/admin_frontend_uploader.js":
-                    "javascript/src/frontends/admin/{{ underscored_pluralized_entity_name }}_uploader.js",
                 "./api-generator-templates/file_system/model.py":
                     "apis/models/{{ underscored_entity_name }}.py"
             }
