@@ -1,17 +1,18 @@
 1. Drop the following lines to app.yaml:
 
 # {{ underscored_entity_name }} file-system API {{{
-# admin parts {{{
-- url: /{{ underscored_entity_name }}/(create|get_upload_url|all|success|failure)(/.*)?
-  script: apis/{{ underscored_entity_name }}.py
-  login: admin
 
+# create/get_upload_url/success/failure
+- url: /{{ underscored_entity_name }}/(create|get_upload_url|success|failure)(/.*)?
+  script: apis/{{ underscored_entity_name }}.py
+  login: {{ create_action_access_level }}
+
+# remove
 - url: /{{ underscored_entity_name }}/([^/]*)/(remove)(/.*)?
   script: apis/{{ underscored_entity_name }}.py
-  login: admin
+  login: {{ remove_action_access_level }}
 
-# }}}
-
+# get
 - url: /{{ underscored_entity_name }}(/.*)?
   script: apis/{{ underscored_entity_name }}.py
 # }}}
