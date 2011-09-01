@@ -13,6 +13,8 @@ from django.utils.datastructures import SortedDict
 
 from google.appengine.api import users
 
+from apis import registered_user
+
 from urlparse import urlparse
 
 import os
@@ -86,6 +88,9 @@ class All(webapp.RequestHandler):
         page_size = int(page_size)
 
         {{ underscored_pluralized_entity_name }}_query = {{ camelcased_entity_name }}.all().order(order_by)
+
+        registered_user.add_user_group_filter({{ underscored_pluralized_entity_name }}_query)
+
         paged_query = PagedQuery({{ underscored_pluralized_entity_name }}_query, page_size)
 
         results = paged_query.fetch_page(page)
@@ -146,6 +151,10 @@ class Remove(webapp.RequestHandler):
             return self.response.out.write(json.dumps(object, cls=JsonEncoder))
         else:
             {{ underscored_entity_name }} = object # just to improve readability
+
+        if not registered_user.user_in_entity_group({{ underscored_entity_name }}):
+            self.response.set_status(403)
+            return self.response.out.write("Permission Denied")
 
         {{ underscored_entity_name }}.blobinfo.delete()
 
@@ -215,6 +224,7 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
         except users.UserNotFoundError:
             {{ underscored_entity_name }}.modified_by = None
 
+        registered_user.apply_user_group_to_entity({{ underscored_entity_name }})
         {{ underscored_entity_name }}.put()
 
         self.redirect('/{{ underscored_entity_name }}/success/')
