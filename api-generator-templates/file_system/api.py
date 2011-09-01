@@ -58,7 +58,16 @@ def _get_path_{{ underscored_entity_name }}(path):
     try:
         {{ underscored_entity_name }} = db.get(db.Key({{ underscored_entity_name }}_key))
     except db.BadKeyError:
-        return (400, {'error': 'InvalidKey'})
+        result =\
+            {{ camelcased_entity_name }}\
+                .all()\
+                .filter("permalink", {{ underscored_entity_name }}_key)\
+                .fetch(1)
+
+        if len(result) == 0:
+            return self.error(404)
+        else:
+            {{ underscored_entity_name }} = result[0]
 
     return (200, {{ underscored_entity_name }})
 # }}}
@@ -71,8 +80,10 @@ class All(webapp.RequestHandler):
         page_size = self.request.GET.get('page_size') or 30
         page = self.request.GET.get('page') or 1
         order_by = self.request.GET.get('order_by') or '-date_modified'
+        callback = self.request.GET.get('callback') or ""
 
         page = int(page)
+        page_size = int(page_size)
 
         {{ underscored_pluralized_entity_name }}_query = {{ camelcased_entity_name }}.all().order(order_by)
         paged_query = PagedQuery({{ underscored_pluralized_entity_name }}_query, page_size)
@@ -80,19 +91,30 @@ class All(webapp.RequestHandler):
         results = paged_query.fetch_page(page)
         pages_count = paged_query.page_count()
 
-        response = {'{{ underscored_pluralized_entity_name }}': SortedDict(), 'pager': {'pages_count': pages_count}}
+        response = {'{{ underscored_pluralized_entity_name }}': [], 'pager': {'pages_count': pages_count}}
         for {{ underscored_entity_name }} in results:
-            key = str({{ underscored_entity_name }}.key())
-            response['{{ underscored_pluralized_entity_name }}'][key] = {{ underscored_entity_name }}
-            response['{{ underscored_pluralized_entity_name }}'][key].blobinfo = \
-                    {
-                        "content_type": {{ underscored_entity_name }}.blobinfo.content_type,
-                        "creation": {{ underscored_entity_name }}.blobinfo.creation,
-                        "size": {{ underscored_entity_name }}.blobinfo.size,
-                        "filename": {{ underscored_entity_name }}.blobinfo.filename
-                    }
+            response["{{ underscored_pluralized_entity_name }}"].append({
+                "key": str({{ underscored_entity_name }}.key()),
+                "permalink": {{ underscored_entity_name }}.permalink,
+                "group": {{ underscored_entity_name }}.group,
+                "modified_by": {{ underscored_entity_name }}.modified_by,
+                "created_by": {{ underscored_entity_name }}.created_by,
+                "date_created": {{ underscored_entity_name }}.date_created,
+                "date_modified": {{ underscored_entity_name }}.date_modified,
+                "blobinfo": {
+                    "content_type": {{ underscored_entity_name }}.blobinfo.content_type,
+                    "creation": {{ underscored_entity_name }}.blobinfo.creation,
+                    "size": {{ underscored_entity_name }}.blobinfo.size,
+                    "filename": {{ underscored_entity_name }}.blobinfo.filename
+                }
+            })
 
-        return self.response.out.write(json.dumps(response, cls=JsonEncoder))
+        response = json.dumps(response, cls=JsonEncoder)
+
+        if callback != "":
+            response = callback + "(" + response + ")"
+
+        return self.response.out.write(response)
 # }}}
 
 # GetUploadUrl {{{
@@ -102,7 +124,14 @@ class GetUploadUrl(webapp.RequestHandler):
     def get(self):
         from google.appengine.ext import blobstore
 
-        return self.response.out.write(json.dumps({"upload_url": blobstore.create_upload_url('/{{ underscored_entity_name }}/create/')}, cls=JsonEncoder))
+        callback = self.request.GET.get('callback') or ""
+
+        response = json.dumps({"upload_url": blobstore.create_upload_url('/{{ underscored_entity_name }}/create/')}, cls=JsonEncoder)
+
+        if callback != "":
+            response = callback + "(" + response + ")"
+
+        return self.response.out.write(response)
 # }}}
 
 # Remove {{{
@@ -135,6 +164,11 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
             if key in fields:
                 setattr({{ underscored_entity_name }}, key, self.request.POST[key])
 
+        {{ underscored_entity_name }}.permalink = {{ underscored_entity_name }}.permalink.strip()
+
+        if len({{ underscored_entity_name }}.permalink) == 0:
+            return self.redirect('/{{ underscored_entity_name }}/failure/You have to pick a permalink')
+
         # set blobinfo {{{
         upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
         if len(upload_files) == 0:
@@ -162,7 +196,7 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
 
         {% ?mime_types_restriced %}
         # check whether mimetype allowed {{{
-        if blobinfo.content_type not in [{% @allowed_mime_types %}"{{ . }}", {% /@allowed_mime_types %}]:
+        if blobinfo.content_type not in [{% @allowed_mime_types %}"{{ . }}"{% !last %}, {% /!last %}{% /@allowed_mime_types %}]:
             # remove uploaded blob
             blobinfo.delete()
 
@@ -171,9 +205,15 @@ class Create(blobstore_handlers.BlobstoreUploadHandler):
         # }}}
         {% /?mime_types_restriced %}
 
+        try:
+            {{ underscored_entity_name }}.created_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.created_by = None
 
-        {{ underscored_entity_name }}.created_by = users.User()
-        {{ underscored_entity_name }}.modified_by = users.User()
+        try:
+            {{ underscored_entity_name }}.modified_by = users.User()
+        except users.UserNotFoundError:
+            {{ underscored_entity_name }}.modified_by = None
 
         {{ underscored_entity_name }}.put()
 
