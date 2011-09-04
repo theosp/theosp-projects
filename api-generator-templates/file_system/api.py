@@ -67,7 +67,7 @@ def _get_path_{{ underscored_entity_name }}(path):
                 .fetch(1)
 
         if len(result) == 0:
-            return self.error(404)
+            return (400, "Couldn't find a {{ readable_noncapitalized_entity_name }} with a key or permalink: `%s'" % {{ underscored_entity_name }}_key)
         else:
             {{ underscored_entity_name }} = result[0]
 
