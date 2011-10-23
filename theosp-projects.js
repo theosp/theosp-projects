@@ -190,41 +190,45 @@
                 "            submodules listed in the submodules object.",
                 "",
                 "        help",
+                "            Show this page",
+                "",
+                "",
                 ""
             ].join("\n"));
         },
         // }}}
 
         // init {{{
-        init: function () {
-            verboseExec('mkdir ' + options.project_path,
+        init: function (args) {
+            verboseExec('ssh-add', 
                 function () {
-                    verboseExec('git init', 
-                        {cwd: options.project_path},
+                    verboseExec('mkdir ' + options.project_path,
                         function () {
-                            verboseExec('touch README', 
+                            verboseExec('git init', 
                                 {cwd: options.project_path},
                                 function () {
-                                    verboseExec('git add README', 
+                                    verboseExec('touch README.rst', 
                                         {cwd: options.project_path},
                                         function () {
-                                            verboseExec('git commit -m "first commit"', 
+                                            verboseExec('git add README.rst', 
                                                 {cwd: options.project_path},
-
                                                 function () {
-                                                    generate_project_leaves_directories_array(options.project_path, project_directory_structure);
-                                                    multiple_recursive_mkdir(project_leaves_directories, function () {
-                                                        verboseExec('git remote add origin git@github.com:' + project.github_rep + '.git', 
-                                                            {cwd: options.project_path},
-                                                            function () {
-                                                                verboseExec('git push origin master', 
-                                                                    {cwd: options.project_path},
-                                                                    function () {
-                                                                    }
-                                                                );
-                                                            }
-                                                        );
-                                                    });
+                                                    verboseExec('git commit -m "first commit"', 
+                                                        {cwd: options.project_path},
+
+                                                        function () {
+                                                            verboseExec('git remote add origin git@github.com:' + project.github_rep + '.git', 
+                                                                {cwd: options.project_path},
+                                                                function () {
+                                                                    verboseExec('git push origin master', 
+                                                                        {cwd: options.project_path},
+                                                                        function () {
+                                                                        }
+                                                                    );
+                                                                }
+                                                            );
+                                                        }
+                                                    );
                                                 }
                                             );
                                         }
@@ -263,29 +267,32 @@
             // }}}
 
             // copy skeleton templates files to their path in the project {{{
-            for (var template_path in skeleton_templates) {
-                if (skeleton_templates.hasOwnProperty(template_path)) {
-                    var output_path = options.project_path + '/' +
-                            populateTemplate(skeleton_templates[template_path], templates_components),
-                        read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
-                        write_stream = fs.createWriteStream(output_path);
+            generate_project_leaves_directories_array(options.project_path, project_directory_structure);
+            multiple_recursive_mkdir(project_leaves_directories, function () {
+                for (var template_path in skeleton_templates) {
+                    if (skeleton_templates.hasOwnProperty(template_path)) {
+                        var output_path = options.project_path + '/' +
+                                populateTemplate(skeleton_templates[template_path], templates_components),
+                            read_stream = fs.createReadStream(template_path, {encoding: 'utf8'}),
+                            write_stream = fs.createWriteStream(output_path);
 
-                    // without a the anon func the callback for
-                    // write_stream.once might hold the next for loop
-                    // iteration read/write_streams
-                    (function (read_stream, write_stream) {
-                        var template = '';
-                        read_stream
-                            .on('data', function (data) {
-                                template += data;
-                            })
-                            .on('end', function () {
-                                write_stream.write(
-                                    populateTemplate(template, templates_components));
-                            });
-                    })(read_stream, write_stream);
+                        // without a the anon func the callback for
+                        // write_stream.once might hold the next for loop
+                        // iteration read/write_streams
+                        (function (read_stream, write_stream) {
+                            var template = '';
+                            read_stream
+                                .on('data', function (data) {
+                                    template += data;
+                                })
+                                .on('end', function () {
+                                    write_stream.write(
+                                        populateTemplate(template, templates_components));
+                                });
+                        })(read_stream, write_stream);
+                    }
                 }
-            }
+            });
             // }}}
         },
         // }}}
@@ -405,7 +412,7 @@
         }
         // }}}
 
-        actions[opts.action].apply(this, opts.args);
+        actions[opts.action].call(this, opts);
     };
     // }}}
 
