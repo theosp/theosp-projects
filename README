@@ -4,8 +4,10 @@ Theosp Projects
 Quick start
 -----------
 
-Setup project.conf (see "project.conf structure" section)
+First, setup project.conf (see "project.conf structure" section)
+
 node ./theosp-projects.js init
+node ./theosp-projects.js update_skeleton
 node ./theosp-projects.js register_submodules
 
 project.conf structure
