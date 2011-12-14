@@ -24,6 +24,8 @@ from apis.helpers.paging import PagedQuery
 
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+
+from google.appengine.api.datastore_errors import EntityNotFoundError
 # }}}
 
 # helpers {{{
@@ -98,21 +100,28 @@ class All(webapp.RequestHandler):
 
         response = {'{{ underscored_pluralized_entity_name }}': [], 'pager': {'pages_count': pages_count}}
         for {{ underscored_entity_name }} in results:
-            response["{{ underscored_pluralized_entity_name }}"].append({
-                "key": str({{ underscored_entity_name }}.key()),
-                "permalink": {{ underscored_entity_name }}.permalink,
-                "group": {{ underscored_entity_name }}.group,
-                "modified_by": {{ underscored_entity_name }}.modified_by,
-                "created_by": {{ underscored_entity_name }}.created_by,
-                "date_created": {{ underscored_entity_name }}.date_created,
-                "date_modified": {{ underscored_entity_name }}.date_modified,
-                "blobinfo": {
-                    "content_type": {{ underscored_entity_name }}.blobinfo.content_type,
-                    "creation": {{ underscored_entity_name }}.blobinfo.creation,
-                    "size": {{ underscored_entity_name }}.blobinfo.size,
-                    "filename": {{ underscored_entity_name }}.blobinfo.filename
+            try:
+                {{ underscored_entity_name }} = {
+                    "key": str({{ underscored_entity_name }}.key()),
+                    "permalink": {{ underscored_entity_name }}.permalink,
+                    "group": {{ underscored_entity_name }}.group,
+                    "modified_by": {{ underscored_entity_name }}.modified_by,
+                    "created_by": {{ underscored_entity_name }}.created_by,
+                    "date_created": {{ underscored_entity_name }}.date_created,
+                    "date_modified": {{ underscored_entity_name }}.date_modified,
+                    "blobinfo": {
+                        "content_type": {{ underscored_entity_name }}.blobinfo.content_type,
+                        "creation": {{ underscored_entity_name }}.blobinfo.creation,
+                        "size": {{ underscored_entity_name }}.blobinfo.size,
+                        "filename": {{ underscored_entity_name }}.blobinfo.filename
+                    }
                 }
-            })
+            except EntityNotFoundError:
+                import logging
+                logging.error("Entity not found on {{ underscored_pluralized_entity_name }} fs: key: `%s'; permalink: `%s'" % (media_file.key(), media_file.permalink))
+                continue
+
+            response["{{ underscored_pluralized_entity_name }}"].append({{ underscored_entity_name }})
 
         response = json.dumps(response, cls=JsonEncoder)
 
